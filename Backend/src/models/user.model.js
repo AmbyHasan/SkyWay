@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+
 const userSchema = new mongoose.Schema({
     firstName:{
       type: String,
@@ -54,6 +55,10 @@ const userSchema = new mongoose.Schema({
       type: Boolean,
       default: true,
     },
+     passwordChangedAt: {
+      type: Date,
+      select: false,
+    },
 } , {
     timestamps:true
 })
@@ -62,12 +67,12 @@ const userSchema = new mongoose.Schema({
 //this will run automatically 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    return next();
+    return ;
   }
 
   this.password = await bcrypt.hash(this.password, 12);
 
-  next();
+
 });
 
 
@@ -83,9 +88,7 @@ userSchema.methods.comparePassword = async function (
 
 
 
-//it will be helpful in login lookups and admin user lisiing
-userSchema.index({ email: 1 });
-userSchema.index({ createdAt: -1 });
+
 
 
 const User = mongoose.model("User", userSchema);
