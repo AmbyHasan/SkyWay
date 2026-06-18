@@ -64,16 +64,7 @@ const userSchema = new mongoose.Schema({
 })
 
 
-//this will run automatically 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    return ;
-  }
 
-  this.password = await bcrypt.hash(this.password, 12);
-
-
-});
 
 
 
@@ -88,8 +79,30 @@ userSchema.methods.comparePassword = async function (
 
 
 
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
+    return;
+  }
+
+  this.password = await bcrypt.hash(this.password, 12);
+
+  if (!this.isNew) {
+    this.passwordChangedAt = Date.now() - 1000;
+  }
+});
 
 
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp =
+      parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  return false;
+};
 
 const User = mongoose.model("User", userSchema);
 

@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import AppError from "../utils/AppError.js";
 import { generateAccessToken , generateAndSaveRefreshToken , refreshCookieOptions , revokeAllUserTokens, verifyRefreshToken, revokeRefreshToken, } from "../utils/jwt.utils.js";
 import { sendSuccess } from "../utils/response.utils.js";
-
+import bcrypt from "bcryptjs";
 
 const register = async (req, res, next) => {
   try {
@@ -39,14 +39,25 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
+   
     //do not return the password to the user
     const user = await User.findOne({ email }).select('+password');
+    console.log(user);
 
-    if (!user || !(await user.comparePassword(password))) {
-     
-      return next(new AppError('Invalid email or password.', 401));
-    }
+    console.log("User found:", !!user);
+    
+let directCompare = false;
+
+if (user) {
+ directCompare = await bcrypt.compare(
+    password,
+    user.password
+  );}
+
+  console.log("Direct bcrypt compare:", directCompare);
+
+  const methodCompare = await user.comparePassword(password);
+   
 
     if (!user.isActive) {
       return next(new AppError('Your account has been deactivated. Contact support.', 403));

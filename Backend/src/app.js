@@ -8,7 +8,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import authRoutes from "./routes/auth.routes.js";
 import { globalErrorHandler, notFound } from "./middlewares/error.middleware.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
-
+import userRoutes from "./routes/user.routes.js"
 
 dns.setServers([
   "1.1.1.1",
@@ -64,6 +64,7 @@ app.get("/api/health", (req, res) => {
 
 //routes
 app.use("/api/auth", authRoutes);
+app.use("/api/user" ,userRoutes);
 
 // 404 handler
 app.use(notFound);
