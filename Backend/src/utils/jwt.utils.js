@@ -49,7 +49,7 @@ const verifyRefreshToken = async (rawToken) => {
 const verifyAccessToken = (token) => {
   return jwt.verify(
     token,
-    process.env.JWT_ACCESS_SECRET
+    process.env.JWT_SECRET
   );
 };
 

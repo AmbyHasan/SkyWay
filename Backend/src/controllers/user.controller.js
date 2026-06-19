@@ -100,10 +100,10 @@ console.log("Hardcoded Test:", test);
 
     user.password = newPassword;
 
-    // Triggers pre-save middleware and hashes password
+    // triggers pre-save middleware and hashes password
     await user.save();
 
-    // Logout user from all devices
+    // logout user from all devices
     await revokeAllUserTokens(user._id);
 
     res.clearCookie("refreshToken", {

@@ -9,10 +9,12 @@ import authRoutes from "./routes/auth.routes.js";
 import { globalErrorHandler, notFound } from "./middlewares/error.middleware.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
 import userRoutes from "./routes/user.routes.js"
+import flightRoutes from "./routes/flight.routes.js";
+
 
 dns.setServers([
   "1.1.1.1",
-  "8.8.8.8"
+  "8.8.8.1"
 ]);
 
 const app = express();
@@ -65,6 +67,7 @@ app.get("/api/health", (req, res) => {
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user" ,userRoutes);
+app.use('/api/flights', flightRoutes);
 
 // 404 handler
 app.use(notFound);
