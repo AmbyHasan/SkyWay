@@ -11,6 +11,7 @@ import { apiLimiter } from "./middlewares/rateLimiter.js";
 import userRoutes from "./routes/user.routes.js"
 import flightRoutes from "./routes/flight.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 
 dns.setServers([
@@ -70,6 +71,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user" ,userRoutes);
 app.use('/api/flights', flightRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 // 404 handler
