@@ -174,14 +174,23 @@ const bookingSchema = new mongoose.Schema(
   }
 );
 
-// Indexes
+bookingSchema.pre("validate", function (next) {
+  if (!this.bookingRef) {
+    this.bookingRef =
+      "SKY" +
+      Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
+  }
+
+
+});
+
+// indexes
 bookingSchema.index({
   user: 1,
   createdAt: -1,
-});
-
-bookingSchema.index({
-  bookingRef: 1,
 });
 
 bookingSchema.index({
@@ -194,7 +203,7 @@ bookingSchema.index({
   createdAt: -1,
 });
 
-// Virtual
+// virtual
 bookingSchema.virtual("passengerCount").get(function () {
   return this.passengers.length;
 });

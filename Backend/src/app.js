@@ -10,6 +10,7 @@ import { globalErrorHandler, notFound } from "./middlewares/error.middleware.js"
 import { apiLimiter } from "./middlewares/rateLimiter.js";
 import userRoutes from "./routes/user.routes.js"
 import flightRoutes from "./routes/flight.routes.js";
+import bookingRoutes from "./routes/booking.routes.js";
 
 
 dns.setServers([
@@ -68,6 +69,8 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/user" ,userRoutes);
 app.use('/api/flights', flightRoutes);
+app.use('/api/bookings', bookingRoutes);
+
 
 // 404 handler
 app.use(notFound);
