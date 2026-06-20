@@ -25,28 +25,38 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 //app.use(mongoSanitize());
 
 
-
 const allowedOrigins = [
-  process.env.CLIENT_URL || "http://localhost:5173",
+  "http://localhost:5173",
   "http://localhost:3000",
-];
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
+      // Allows Postman, Render health checks, and server-to-server requests
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(
-          new Error(`CORS policy: origin ${origin} is not allowed`)
-        );
+        return callback(null, true);
       }
+
+      return callback(
+        new Error(`CORS policy: origin ${origin} is not allowed`)
+      );
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "SkyWay API is running ✈️",
+  });
+});
+
 
 //health check route
 app.get("/api/health", (req, res) => {
