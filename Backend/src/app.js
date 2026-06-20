@@ -1,7 +1,6 @@
 import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import dns from "dns";
 import cors from "cors";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
@@ -12,12 +11,6 @@ import userRoutes from "./routes/user.routes.js"
 import flightRoutes from "./routes/flight.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
-
-
-dns.setServers([
-  "1.1.1.1",
-  "8.8.8.1"
-]);
 
 const app = express();
 
@@ -31,7 +24,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //app.use(mongoSanitize());
 
-app.use("/api", apiLimiter);
+
 
 const allowedOrigins = [
   process.env.CLIENT_URL || "http://localhost:5173",
@@ -65,6 +58,8 @@ app.get("/api/health", (req, res) => {
     uptime: `${Math.floor(process.uptime())}s`,
   });
 });
+
+app.use("/api", apiLimiter);
 
 //routes
 app.use("/api/auth", authRoutes);

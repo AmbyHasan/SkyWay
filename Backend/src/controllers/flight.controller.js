@@ -163,11 +163,21 @@ const getFeaturedFlights = async (
     next
 ) => {
     try {
-        const flights = await Flight.find({
+        let flights = await Flight.find({
             isDeleted: false,
             isFeatured: true,
             status: "scheduled",
         }).limit(8);
+
+        if (flights.length === 0) {
+            flights = await Flight.find({
+                isDeleted: false,
+                status: { $in: ["scheduled", "delayed"] },
+                departureTime: { $gte: new Date() },
+            })
+                .sort({ departureTime: 1 })
+                .limit(8);
+        }
 
         sendSuccess(
             res,

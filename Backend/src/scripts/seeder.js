@@ -158,6 +158,7 @@ const seed = async () => {
         status: randomFrom(['scheduled', 'scheduled', 'scheduled', 'delayed']),
         amenities: ['wifi', 'meals', 'usb'].slice(0, randomBetween(1, 3)),
         stops: randomFrom([0, 0, 0, 1]),
+        isFeatured: i < 4,
       };
     });
 

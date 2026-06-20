@@ -188,10 +188,6 @@ flightSchema.index({
 });
 
 flightSchema.index({
-    flightNumber: 1,
-});
-
-flightSchema.index({
     status: 1,
 });
 
@@ -237,7 +233,7 @@ flightSchema.pre("save", function (next) {
         (1000 * 60)
     );
 
-    
+    next();
 });
 
 const Flight = mongoose.model(
