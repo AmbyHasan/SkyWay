@@ -28,6 +28,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
+  "https://sky-way-swart.vercel.app",
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
