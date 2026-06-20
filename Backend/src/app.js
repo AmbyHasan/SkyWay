@@ -70,7 +70,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.use("/api", apiLimiter);
+// app.use("/api", apiLimiter);
 
 //routes
 app.use("/api/auth", authRoutes);
