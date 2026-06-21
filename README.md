@@ -13,9 +13,9 @@ SkyWay is a full-stack airline reservation platform built using the MERN stack. 
 
 
 ---
+## 🏗️ System Architecture
 
-## System Architecture
-
+```mermaid
 flowchart LR
     User["User / Browser"]
 
@@ -56,6 +56,7 @@ flowchart LR
     Models --> Flights
     Models --> Bookings
     JWT --> RefreshTokens
+```
 
 ---  
 
