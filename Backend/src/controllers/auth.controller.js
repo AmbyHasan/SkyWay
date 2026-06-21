@@ -4,7 +4,10 @@ import { generateAccessToken , generateAndSaveRefreshToken , refreshCookieOption
 import { sendSuccess } from "../utils/response.utils.js";
 
 const register = async (req, res, next) => {
+
   try {
+
+    //get the data from registration form 
     const { firstName, lastName, email, password, phone } = req.body;
      console.log("next type:", typeof next);
 
@@ -14,13 +17,14 @@ const register = async (req, res, next) => {
       return next(new AppError('An account with this email already exists.', 409));
     }
 
+    //storing the data in db
     const user = await User.create({ firstName, lastName, email, password, phone });
 
     // issue tokens
     const accessToken = generateAccessToken(user._id, user.role);
-    const rawRefreshToken = await generateAndSaveRefreshToken(user._id);
+    const rawRefreshToken = await generateAndSaveRefreshToken(user._id); //hashed refresh token in saved in the db
 
-    // Set refresh token as httpOnly cookie
+    // set refresh token as httpOnly cookie
     res.cookie('refreshToken', rawRefreshToken, refreshCookieOptions);
 
     sendSuccess(res, 201, 'Account created successfully', {
@@ -29,7 +33,7 @@ const register = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    next(error);
+    next(error); //pass the error to the global error handler middleware 
   }
 };
 
@@ -39,12 +43,13 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select('+password'); //here we are requesting the password also for comparison
 
     if (!user || !(await user.comparePassword(password))) {
       return next(new AppError('Invalid email or password.', 401));
     }
 
+    //admin can activate or deactivate the user accounts
     if (!user.isActive) {
       return next(new AppError('Your account has been deactivated. Contact support.', 403));
     }
@@ -54,7 +59,7 @@ const login = async (req, res, next) => {
 
     res.cookie('refreshToken', rawRefreshToken, refreshCookieOptions);
 
-    user.password = undefined;
+    user.password = undefined; //before sending the response back to the user we mark the password as undefined ,so that the frontend does not receive the user password
 
     sendSuccess(res, 200, 'Logged in successfully', {
       user,
@@ -69,13 +74,13 @@ const login = async (req, res, next) => {
 
 const refresh = async (req, res, next) => {
   try {
-    const rawToken = req.cookies?.refreshToken;
+    const rawToken = req.cookies?.refreshToken; //extract he token from cookies
 
     if (!rawToken) {
       return next(new AppError('No refresh token provided.', 401));
     }
 
-    //verifying refresh token
+    //verifying refresh token from the db
     const tokenDoc = await verifyRefreshToken(rawToken);
 
     if (!tokenDoc) {
@@ -115,7 +120,7 @@ const logout = async (req, res, next) => {
       await revokeRefreshToken(rawToken);
     }
 
-    // Clear the cookie regardless
+    // clear the cookie regardless
     res.clearCookie('refreshToken', { path: '/' });
 
     sendSuccess(res, 200, 'Logged out successfully');

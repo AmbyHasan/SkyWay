@@ -7,7 +7,7 @@ const registerValidator = [
     .trim()
     .notEmpty().withMessage('First name is required')
     .isLength({ max: 50 }).withMessage('First name cannot exceed 50 characters')
-    .matches(/^[a-zA-Z\s'-]+$/).withMessage('First name contains invalid characters'),
+    .matches(/^[a-zA-Z\s'-]+$/).withMessage('First name contains invalid characters'), //from the beginning to the end, the value must contain one or more characters, and every character must be a letter, whitespace, apostrophe, or hyphen.
 
   body('lastName')
     .trim()
@@ -24,13 +24,13 @@ const registerValidator = [
   body('password')
     .notEmpty().withMessage('Password is required')
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) //lowercase, uppercase ,digits
     .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
 
   body('phone')
     .optional()
     .trim()
-    .matches(/^\+?[\d\s\-()]{7,20}$/).withMessage('Please enter a valid phone number'),
+    .matches(/^\+?[\d\s\-()]{7,20}$/).withMessage('Please enter a valid phone number'), //only 7 to 20 characters are allowed
 ];
 
 const loginValidator = [

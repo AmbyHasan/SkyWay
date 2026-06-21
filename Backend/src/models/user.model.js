@@ -92,7 +92,8 @@ userSchema.pre("save", async function () {
 });
 
 
-
+//this function checks whether a user changed their password after a JWT token was created.
+//when the user changes his password ,we force him to login again
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp =

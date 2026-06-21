@@ -41,7 +41,8 @@ const verifyRefreshToken = async (rawToken) => {
     token: hashedToken,
     isRevoked: false,
     expiresAt: { $gt: new Date() },
-  }).populate('user', 'id role email isActive');
+  }).populate('user', '_id role email isActive');
+  //here we are sending the user doc as well,so that new tokens can be generated and saved in the db
 
   return tokenDoc;
 };
