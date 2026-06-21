@@ -14,6 +14,51 @@ SkyWay is a full-stack airline reservation platform built using the MERN stack. 
 
 ---
 
+## System Architecture
+
+flowchart LR
+    User["User / Browser"]
+
+    subgraph FE["Frontend — React + Vite"]
+        Pages["Pages & Components"]
+        Redux["Redux Store"]
+        Services["API Service Layer"]
+    end
+
+    subgraph BE["Backend — Node.js + Express"]
+        App["app.js"]
+        Middleware["Middleware Layer<br/>CORS · Helmet · Rate Limiting · Validation"]
+        Routes["Routes"]
+        Controllers["Controllers"]
+        Models["Mongoose Models"]
+        JWT["JWT Authentication"]
+    end
+
+    subgraph DB["MongoDB Atlas"]
+        Users[("Users")]
+        Flights[("Flights")]
+        Bookings[("Bookings")]
+        RefreshTokens[("Refresh Tokens")]
+    end
+
+    User --> Pages
+    Pages --> Redux
+    Redux --> Services
+    Services -->|"HTTPS REST API"| App
+
+    App --> Middleware
+    Middleware --> Routes
+    Routes --> Controllers
+    Controllers --> JWT
+    Controllers --> Models
+
+    Models --> Users
+    Models --> Flights
+    Models --> Bookings
+    JWT --> RefreshTokens
+
+---  
+
 ## ✨ Key Features
 
 ### 👤 User Features
