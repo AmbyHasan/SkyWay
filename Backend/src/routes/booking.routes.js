@@ -18,16 +18,16 @@ const router = express.Router();
 
 router.use(authenticate);
 
-// create Booking
+// create booking
 router.post( "/", createBookingValidator, validate, createBooking);
 
-// get Logged In User Bookings
+// get logged in user bookings
 router.get( "/my-bookings",getMyBookings);
 
-// get Single Booking
+// get single booking by id
 router.get( "/:id", getBookingById);
 
-// cancel Booking
+// cancel booking by id
 router.patch( "/:id/cancel", cancelBooking);
 
 export default router;

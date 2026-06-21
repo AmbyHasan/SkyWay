@@ -8,7 +8,32 @@ import AppError from "../utils/AppError.js";
 import { sendSuccess } from "../utils/response.utils.js";
 
 
+
+//this controller does two things->
+//1-> decrease the available seats
+//2-> create the booking for the passenger
+
+//it happens in a transaction i.e either both of them succeed or none take place
+
+
+//COMPLETE FLOW
+
+// Passenger sends booking request
+//         ↓
+// Start MongoDB transaction
+//         ↓
+// Atomically check seats + deduct seats
+//         ↓
+// Create booking document
+//         ↓
+// Commit transaction
+//         ↓
+// Fetch populated booking details
+//         ↓
+// Return confirmation
+
 const createBooking = async (req, res, next) => {
+
     const session = await mongoose.startSession();
 
     try {
@@ -34,9 +59,8 @@ const createBooking = async (req, res, next) => {
                 },
             },
             {
-                $inc: {
-                    [`seats.${seatClass}.available`]:
-                        -passengerCount,
+                $inc: {   //it is used for changing the number safely in mongodb
+                    [`seats.${seatClass}.available`]:  -passengerCount,
                 },
             },
             {
@@ -63,7 +87,8 @@ const createBooking = async (req, res, next) => {
 
         const totalPrice =
             pricePerPassenger * passengerCount;
-
+       
+            //adding seat class to every passenger field
         const passengersWithClass = passengers.map(
             (passenger) => ({
                 ...passenger,
@@ -71,6 +96,7 @@ const createBooking = async (req, res, next) => {
             })
         );
 
+        //the booking is created inside the same transaction
         const booking = await Booking.create(
             [
                 {
@@ -252,6 +278,7 @@ const getBookingById = async (
         const isAdmin =
             req.user.role === "admin";
 
+            //return the booking info only if he is the user or an admin
         if (!isOwner && !isAdmin) {
             return next(
                 new AppError(
@@ -323,10 +350,7 @@ const cancelBooking = async (
             );
         }
 
-        if (
-            booking.status ===
-            "cancelled"
-        ) {
+        if (booking.status ==="cancelled") {
             await session.abortTransaction();
             session.endSession();
 
@@ -376,25 +400,19 @@ const cancelBooking = async (
 
         await Flight.findByIdAndUpdate(
             booking.flight,
-            {
-                $inc: {
-                    [`seats.${booking.seatClass}.available`]:
-                        booking.passengers
-                            .length,
+            { 
+                $inc: {    //increement the seats that has been cancelled by the user
+                    [`seats.${booking.seatClass}.available`]: booking.passengers.length,
                 },
             },
             { session }
         );
 
-        booking.status =
-            "cancelled";
+        booking.status ="cancelled";
 
-        booking.cancelledAt =
-            new Date();
+        booking.cancelledAt =new Date();
 
-        booking.cancellationReason =
-            req.body.reason ||
-            "User requested cancellation";
+        booking.cancellationReason = req.body.reason || "User requested cancellation";
 
         await booking.save({
             session,

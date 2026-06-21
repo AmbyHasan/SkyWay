@@ -61,7 +61,7 @@ const paymentSchema = new mongoose.Schema(
       default: null,
     },
 
-    last4: {
+    last4: {     //store the last four digits of the card used for payment
       type: String,
       default: null,
     },
@@ -165,20 +165,22 @@ const bookingSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    toJSON: {
+    toJSON: {   //include virtual field in the api response
       virtuals: true,
     },
-    toObject: {
+    toObject: {  //include virtual field when I create javascript object
       virtuals: true,
     },
   }
 );
 
+
+//creating a booking reference
 bookingSchema.pre("validate", function (next) {
   if (!this.bookingRef) {
     this.bookingRef =
       "SKY" +
-      Math.random()
+      Math.random()   //get a random number -> convert into base 36 -> remove 0. -> convert it into uppercase
         .toString(36)
         .substring(2, 8)
         .toUpperCase();
@@ -203,7 +205,7 @@ bookingSchema.index({
   createdAt: -1,
 });
 
-// virtual
+// virtual for passenger count
 bookingSchema.virtual("passengerCount").get(function () {
   return this.passengers.length;
 });
