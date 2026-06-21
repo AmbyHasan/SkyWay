@@ -21,8 +21,9 @@ const getDashboardStats = async (req, res, next) => {
     ] = await Promise.all([
       User.countDocuments({ role: 'user' }),
 
-      Flight.countDocuments(),
+      Flight.countDocuments({isDeleted: false}),
 
+      //group all the bookings having same status
       Booking.aggregate([
         {
           $group: {
@@ -34,7 +35,7 @@ const getDashboardStats = async (req, res, next) => {
       ]),
 
       Booking.aggregate([
-        {
+        { //keep only those bookings which are made after the frst day of the selected month and whose status is confirmed
           $match: {
             createdAt: { $gte: startOfMonth },
             status: 'confirmed',
@@ -42,7 +43,7 @@ const getDashboardStats = async (req, res, next) => {
         },
         {
           $group: {
-            _id: null,
+            _id: null,  //put every matching booking in single group
             total: { $sum: '$totalPrice' },
             count: { $sum: 1 },
           },
@@ -54,14 +55,16 @@ const getDashboardStats = async (req, res, next) => {
         .populate('flight', 'flightNumber origin destination departureTime')
         .sort({ createdAt: -1 })
         .limit(5)
-        .lean(),
+        .lean(),  //it returns plain JSON instead of mongoose document
 
+
+        //grouping flights by status
       Flight.aggregate([
         { $group: { _id: '$status', count: { $sum: 1 } } },
       ]),
     ]);
 
-    // flatten booking stats into a readable object
+    // flatten booking stats into a readable object so that the frontend can consume and render them easily
     const bookingsByStatus = bookingStats.reduce((acc, item) => {
       acc[item._id] = { count: item.count, revenue: item.revenue };
       return acc;
@@ -71,6 +74,23 @@ const getDashboardStats = async (req, res, next) => {
       return item._id === 'confirmed' ? sum + item.revenue : sum;
     }, 0);
 
+//counting flights by status -> [scheduled ,pending  ,cancelled , confirmed]
+
+//  MongoDB gives grouped data as an array:
+
+// bookingStats = [
+//   { _id: 'confirmed', count: 20, revenue: 150000 },
+//   { _id: 'cancelled', count: 3, revenue: 20000 },
+// ];
+
+// But the frontend would prefer:
+
+// {
+//   confirmed: { count: 20, revenue: 150000 },
+//   cancelled: { count: 3, revenue: 20000 },
+// }
+
+//this is done by the reducer
     const flightsByStatus = flightStatusBreakdown.reduce((acc, item) => {
       acc[item._id] = item.count;
       return acc;
@@ -101,8 +121,9 @@ const getAllUsers = async (req, res, next) => {
   try {
     const { page = 1, limit = 20, search, role, isActive } = req.query;
 
-    const query = {};
-    if (search) {
+    const query = {};  //we will construct or query now
+
+    if (search) {   //case insenstive search
       query.$or = [
         { firstName: { $regex: search, $options: 'i' } },
         { lastName: { $regex: search, $options: 'i' } },
@@ -166,7 +187,7 @@ const toggleUserStatus = async (req, res, next) => {
     const user = await User.findById(req.params.id);
     if (!user) return next(new AppError('User not found', 404));
 
-    // Prevent deactivating own account
+    // prevent deactivating own account
     if (user._id.toString() === req.user._id.toString()) {
       return next(new AppError('You cannot deactivate your own account.', 400));
     }
@@ -197,7 +218,7 @@ const getAllBookings = async (req, res, next) => {
     const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
     const skip = (pageNum - 1) * limitNum;
 
-    // Text search on booking ref
+    // text search on booking ref
     if (search) {
       query.bookingRef = { $regex: search.toUpperCase(), $options: 'i' };
     }
