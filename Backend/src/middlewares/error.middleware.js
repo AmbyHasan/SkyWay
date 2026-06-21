@@ -19,8 +19,9 @@ const handleMongooseValidationError = (err) => {
 };
 
 
+//middleware
 const globalErrorHandler = (err, req, res, next) => {
-  let error = { ...err };
+  let error = { ...err }; //spreading and copying the properties from err in to a new JS object "error"
   error.message = err.message;
   error.statusCode = err.statusCode || 500;
   error.errors = err.errors || [];
@@ -46,7 +47,7 @@ const globalErrorHandler = (err, req, res, next) => {
   res.status(error.statusCode).json(response);
 };
 
-
+//middleware
 const notFound = (req, res, next) => {
   next(new AppError(`Route ${req.method} ${req.originalUrl} not found`, 404));
 };
