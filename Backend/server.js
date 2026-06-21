@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config();//this will enable the usage of environment variables present in .env
 
 import app from "./src/app.js";
 import connectDB from "./src/config/db.js";

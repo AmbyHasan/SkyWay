@@ -5,7 +5,7 @@ import  RefreshToken  from "../models/refreshToken.model.js";
 
 const generateAccessToken = (userId, role) => {
   return jwt.sign(
-    { id: userId, role },
+    { id: userId, role },  //we are also signing role,so the role of the user can be direclty identified by his access token and no db lookup is needed
     process.env.JWT_SECRET,
     { expiresIn: '15m' }
   );
@@ -20,13 +20,14 @@ const generateAndSaveRefreshToken = async (userId) => {
   const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
 
   const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 7);
+  expiresAt.setDate(expiresAt.getDate() + 7); //refersh token is valid for 7 days
 
+  //saving the hashed refresh token in the db
   await RefreshToken.create({
     token: hashedToken,
     user: userId,
     expiresAt,
-    isRevoked: false,
+    isRevoked: false, 
   });
 
   return rawToken;
@@ -75,7 +76,7 @@ const refreshCookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
+  maxAge: 7 * 24 * 60 * 60 * 1000, //valid for 7 days
   path: '/',
 };
 

@@ -15,10 +15,10 @@ import adminRoutes from "./routes/admin.routes.js";
 const app = express();
 
 app.use(morgan("dev"));
-app.use(helmet());
+app.use(helmet()); //it attaches security realted headers when the api's response is sent to the client
 
-app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express.json({ limit: "10kb" })); //to read the json payload
+app.use(express.urlencoded({ extended: true, limit: "10kb" })); //it converts url encoded form data into json
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
@@ -35,8 +35,8 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allows Postman, Render health checks, and server-to-server requests
-      if (!origin || allowedOrigins.includes(origin)) {
+      // allows Postman, Render health checks, and server-to-server requests
+      if (!origin || allowedOrigins.includes(origin)) {  //no origin request comes from postman  ,so those requests are also allowed
         return callback(null, true);
       }
 
@@ -51,6 +51,7 @@ app.use(
 );
 
 
+//api hit by the deployed url on render
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -66,11 +67,11 @@ app.get("/api/health", (req, res) => {
     message: "SkyWay API is operational",
     environment: process.env.NODE_ENV,
     timestamp: new Date().toISOString(),
-    uptime: `${Math.floor(process.uptime())}s`,
+    uptime: `${Math.floor(process.uptime())}s`,  //tells the time since when the process started
   });
 });
 
-// app.use("/api", apiLimiter);
+app.use("/api", apiLimiter); //for applying rate limiting
 
 //routes
 app.use("/api/auth", authRoutes);
