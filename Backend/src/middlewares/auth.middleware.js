@@ -12,7 +12,7 @@ const authenticate = async (req, res, next) => {
       );
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1]; //split the authHeader on the basis of space and get the first value i.e the token
 
     let decoded;
 
@@ -39,7 +39,7 @@ const authenticate = async (req, res, next) => {
       );
     }
 
-    // MISSING PART
+    // extract the id and find the user
     const user = await User.findById(decoded.id).select(
       "+passwordChangedAt"
     );
@@ -71,7 +71,7 @@ const authenticate = async (req, res, next) => {
       );
     }
 
-    req.user = user;
+    req.user = user; //add the user with the request
 
     next();
   } catch (error) {

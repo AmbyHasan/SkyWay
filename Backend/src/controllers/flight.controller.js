@@ -23,6 +23,7 @@ const getFlights = async (req, res, next) => {
             limit = 10,
         } = req.query;
 
+        //developing Query from the values recieved from the frontend
         const query = {
             isDeleted: false,
             status: { $in: ["scheduled", "delayed"] },
@@ -35,6 +36,10 @@ const getFlights = async (req, res, next) => {
         if (destination) {
             query["destination.code"] = destination.toUpperCase();
         }
+
+        //creating the range on the basis of date
+       // 2026-07-10 00:00:00.000 ->start
+      //  2026-07-10 23:59:59.999 ->end
 
         if (date) {
             const start = new Date(date);
@@ -50,7 +55,7 @@ const getFlights = async (req, res, next) => {
         }
 
         query[`seats.${seatClass}.available`] = {
-            $gte: Number(passengers),
+            $gte: Number(passengers),  //since the value comes in string format from the url therefore we are parsing it
         };
 
         if (minPrice || maxPrice) {
@@ -67,6 +72,7 @@ const getFlights = async (req, res, next) => {
             }
         }
 
+        //case-insenstive match for airlines
         if (airline) {
             query.airline = {
                 $regex: airline,
@@ -79,28 +85,22 @@ const getFlights = async (req, res, next) => {
         }
 
         const sortOptions = {
-            departureTime: { departureTime: 1 },
-            price_asc: {
+            departureTime: { departureTime: 1 },   //earliest flight first
+            price_asc: {                           //cheapest flight first
                 [`seats.${seatClass}.price`]: 1,
             },
-            price_desc: {
+            price_desc: {                            //costliest flight first
                 [`seats.${seatClass}.price`]: -1,
             },
-            duration: { duration: 1 },
+            duration: { duration: 1 },               //shortest flight first
         };
 
-        const sortQuery =
-            sortOptions[sort] || {
-                departureTime: 1,
-            };
+        const sortQuery = sortOptions[sort] || { departureTime: 1, };
 
         const pageNum = Math.max(1, Number(page));
-        const limitNum = Math.min(
-            50,
-            Math.max(1, Number(limit))
-        );
+        const limitNum = Math.min(50, Math.max(1, Number(limit)));
 
-        const skip = (pageNum - 1) * limitNum;
+        const skip = (pageNum - 1) * limitNum;  //calculating how many documnets to skip for the next page
 
         const [flights, total] = await Promise.all([
             Flight.find(query)
@@ -140,9 +140,7 @@ const getFlightById = async (req, res, next) => {
         });
 
         if (!flight) {
-            return next(
-                new AppError("Flight not found", 404)
-            );
+            return next( new AppError("Flight not found", 404));
         }
 
         sendSuccess(
@@ -163,12 +161,14 @@ const getFeaturedFlights = async (
     next
 ) => {
     try {
+        //first find out the scheduled flights
         let flights = await Flight.find({
             isDeleted: false,
             isFeatured: true,
             status: "scheduled",
         }).limit(8);
 
+        //if there are no scheduled flights then fetch the delayed fields
         if (flights.length === 0) {
             flights = await Flight.find({
                 isDeleted: false,
@@ -198,6 +198,7 @@ const createFlight = async (
     next
 ) => {
     try {
+
         const flight = await Flight.create(req.body);
 
         sendSuccess(
@@ -212,6 +213,7 @@ const createFlight = async (
 };
 
 
+//can be accessed by admin
 const updateFlight = async (
     req,
     res,
@@ -223,15 +225,13 @@ const updateFlight = async (
                 req.params.id,
                 req.body,
                 {
-                    new: true,
-                    runValidators: true,
+                    new: true,  //this ensures that the updated document is returned from the mongodb
+                    runValidators: true,  //this ensures the schema level validations are applied on the updated document
                 }
             );
 
         if (!flight) {
-            return next(
-                new AppError("Flight not found", 404)
-            );
+            return next( new AppError("Flight not found", 404));
         }
 
         sendSuccess(
@@ -253,9 +253,7 @@ const deleteFlight = async (
     next
 ) => {
     try {
-        const flight = await Flight.findById(
-            req.params.id
-        );
+        const flight = await Flight.findById(req.params.id);
 
         if (!flight) {
             return next(

@@ -29,7 +29,7 @@ const airportSchema = new mongoose.Schema(
             trim: true,
         },
     },
-    { _id: false }
+    { _id: false } //do not create an id for this as these are basically the sub properties of the properties present in flight schema
 );
 
 const cabinSchema = new mongoose.Schema(
@@ -180,7 +180,7 @@ const flightSchema = new mongoose.Schema(
     }
 );
 
-// Indexes
+// indexes
 flightSchema.index({
     "origin.code": 1,
     "destination.code": 1,
@@ -195,6 +195,8 @@ flightSchema.index({
     departureTime: 1,
 });
 
+
+//text index for keyword search
 flightSchema.index({
     airline: "text",
     "origin.city": "text",
@@ -230,7 +232,7 @@ flightSchema.pre("save", function (next) {
 
     this.duration = Math.round(
         (this.arrivalTime - this.departureTime) /
-        (1000 * 60)
+        (1000 * 60) //this converts miliseconds into minutes
     );
 
     next();
