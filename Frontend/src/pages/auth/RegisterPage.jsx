@@ -91,14 +91,14 @@ export const RegisterPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label="First Name"
-              placeholder="John"
+              placeholder="Your name"
               icon={User}
               error={errors.firstName?.message}
               {...register('firstName', { required: 'First name is required' })}
             />
             <Input
               label="Last Name"
-              placeholder="Doe"
+              placeholder="Your surname"
               icon={User}
               error={errors.lastName?.message}
               {...register('lastName', { required: 'Last name is required' })}
@@ -108,7 +108,7 @@ export const RegisterPage = () => {
           <Input
             label="Email Address"
             type="email"
-            placeholder="john@example.com"
+            placeholder="name@example.com"
             icon={Mail}
             error={errors.email?.message}
             {...register('email', {
