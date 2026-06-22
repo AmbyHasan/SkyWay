@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -49,7 +49,7 @@ export const LoginPage = () => {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50/50 dark:bg-slate-950/20">
       <Card className="w-full max-w-md p-6 sm:p-8 shadow-xl border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 mx-auto">
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-primary-50 dark:bg-primary-950/50 rounded-2xl text-primary-600 dark:text-primary-400 mb-4">
+          <div className="inline-flex justify-center items-center overflow-hidden p-3 bg-primary-50 dark:bg-primary-950/50 rounded-2xl text-primary-600 dark:text-primary-400 mb-4">
             <Plane className="h-8 w-8 animate-float" />
           </div>
           <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
