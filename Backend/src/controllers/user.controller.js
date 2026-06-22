@@ -65,18 +65,7 @@ const changePassword = async (req, res, next) => {
       return next(new AppError("User not found.", 404));
     }
 
-
-    console.log("Current Password:", currentPassword);
-console.log("Stored Hash:", user.password);
-
-const test = await bcrypt.compare(
-  "Password123", // replace with your actual password
-  user.password
-);
-
-console.log("Hardcoded Test:", test);
-    
-   
+  //check whether the current password entered by the user is correct or not   
     const isPasswordCorrect = await bcrypt.compare(
       currentPassword,
       user.password
@@ -98,12 +87,13 @@ console.log("Hardcoded Test:", test);
       );
     }
 
+    //update the password in the db
     user.password = newPassword;
 
     // triggers pre-save middleware and hashes password
     await user.save();
 
-    // logout user from all devices
+    // logout user from all devices as the password has been changed
     await revokeAllUserTokens(user._id);
 
     res.clearCookie("refreshToken", {
