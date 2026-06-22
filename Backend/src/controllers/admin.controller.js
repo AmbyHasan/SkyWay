@@ -9,7 +9,7 @@ import { sendSuccess } from '../utils/response.utils.js';
 const getDashboardStats = async (req, res, next) => {
   try {
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);  //1 June 2026, 12:00:00 AM
 
     const [
       totalUsers,
@@ -121,17 +121,19 @@ const getAllUsers = async (req, res, next) => {
   try {
     const { page = 1, limit = 20, search, role, isActive } = req.query;
 
-    const query = {};  //we will construct or query now
+    const query = {};  //we will construct our query now
 
     if (search) {   //case insenstive search
+    const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');  //but a backslash before every special character found  , this is done to ensusre a.b becomes a\.b so that the mongodb searches for literal text a.b and does not take . to match with any character
       query.$or = [
-        { firstName: { $regex: search, $options: 'i' } },
-        { lastName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
+        { firstName: { $regex: escapedSearch, $options: 'i' } },
+        { lastName: { $regex: escapedSearch, $options: 'i' } },
+        { email: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
+
     if (role) query.role = role;
-    if (isActive !== undefined) query.isActive = isActive === 'true';
+    if (isActive !== undefined) query.isActive = isActive === 'true';  
 
     const pageNum = Math.max(1, parseInt(page));
     const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
@@ -192,7 +194,7 @@ const toggleUserStatus = async (req, res, next) => {
       return next(new AppError('You cannot deactivate your own account.', 400));
     }
 
-    user.isActive = !user.isActive;
+    user.isActive = !user.isActive; //toggle the user status
     await user.save();
 
     sendSuccess(
@@ -216,7 +218,7 @@ const getAllBookings = async (req, res, next) => {
 
     const pageNum = Math.max(1, parseInt(page));
     const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
-    const skip = (pageNum - 1) * limitNum;
+    const skip = (pageNum - 1) * limitNum; //the number of documents to be skipped for the next page
 
     // text search on booking ref
     if (search) {
@@ -224,6 +226,7 @@ const getAllBookings = async (req, res, next) => {
     }
 
     const [bookings, total] = await Promise.all([
+
       Booking.find(query)
         .populate('user', 'firstName lastName email')
         .populate('flight', 'flightNumber airline origin destination departureTime status')
@@ -231,6 +234,7 @@ const getAllBookings = async (req, res, next) => {
         .skip(skip)
         .limit(limitNum)
         .lean(),
+
       Booking.countDocuments(query),
     ]);
 
@@ -258,7 +262,7 @@ const updateBookingStatus = async (req, res, next) => {
 
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
-      { status, ...(status === 'cancelled' ? { cancelledAt: new Date() } : {}) },
+      { status, ...(status === 'cancelled' ? { cancelledAt: new Date() } : {}) },  //if the status is confimed then we will only keep status, if the status is cancelled we will add the cancelledAt field also in the document
       { new: true, runValidators: true }
     )
       .populate('user', 'firstName lastName email')
