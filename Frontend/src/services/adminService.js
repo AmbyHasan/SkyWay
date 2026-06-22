@@ -7,6 +7,5 @@ export const adminService = {
   getUserById: (id) => api.get(`/admin/users/${id}`),
   toggleUserStatus: (id) => api.patch(`/admin/users/${id}/status`),
   getAllBookings: (params) => api.get('/admin/bookings', { params }),
-  updateBookingStatus: (id, status) =>
-    api.patch(`/admin/bookings/${id}/status`, { status }),
+  updateBookingStatus: (id, status) => api.patch(`/admin/bookings/${id}/status`, { status }),
 };

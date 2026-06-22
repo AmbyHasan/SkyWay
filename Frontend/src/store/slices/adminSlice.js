@@ -123,7 +123,7 @@ const adminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Dashboard Stats
+      // dashboard stats
       .addCase(fetchDashboardStats.pending, (state) => {
         state.isLoading = true;
       })
@@ -136,7 +136,7 @@ const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Revenue
+      // revenue
       .addCase(fetchRevenueAnalytics.pending, (state) => {
         state.isLoading = true;
       })
@@ -148,7 +148,7 @@ const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Users
+      // users
       .addCase(fetchAllUsers.pending, (state) => {
         state.isLoading = true;
       })
@@ -161,11 +161,11 @@ const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // User by ID
+      // user by id
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.selectedUser = action.payload;
       })
-      // Toggle user status
+      // toggle user status
       .addCase(toggleUserStatus.fulfilled, (state, action) => {
         const idx = state.users.findIndex(
           (u) => u._id === action.payload._id
@@ -174,7 +174,7 @@ const adminSlice = createSlice({
           state.users[idx] = action.payload;
         }
       })
-      // All Bookings
+      // all bookings
       .addCase(fetchAllBookings.pending, (state) => {
         state.isLoading = true;
       })
@@ -187,7 +187,7 @@ const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Update booking status
+      // update booking status
       .addCase(updateBookingStatus.fulfilled, (state, action) => {
         const idx = state.allBookings.findIndex(
           (b) => b._id === action.payload._id

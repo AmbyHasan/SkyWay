@@ -1,5 +1,6 @@
 import api from './api';
 
+
 export const flightService = {
   searchFlights: (params) => api.get('/flights', { params }),
   getFeaturedFlights: () => api.get('/flights/featured'),
