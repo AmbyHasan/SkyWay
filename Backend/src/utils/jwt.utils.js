@@ -78,7 +78,7 @@ const refreshCookieOptions = {
   secure: process.env.NODE_ENV === 'production',
   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   maxAge: 7 * 24 * 60 * 60 * 1000, //valid for 7 days
-  path: '/',
+  path: '/',  //when you will logout and revoke the cookies in that case we will use this same path
 };
 
 export {
