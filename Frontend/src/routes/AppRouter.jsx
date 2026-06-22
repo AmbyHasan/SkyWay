@@ -5,19 +5,19 @@ import { DashboardLayout } from '../layouts/DashboardLayout';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { ProtectedRoute } from './ProtectedRoute';
 
-// Public Pages
+// public pages
 import { LandingPage } from '../pages/public/LandingPage';
 import { SearchFlightsPage } from '../pages/public/SearchFlightsPage';
 import { FlightDetailsPage } from '../pages/public/FlightDetailsPage';
 import { LoginPage } from '../pages/auth/LoginPage';
 import { RegisterPage } from '../pages/auth/RegisterPage';
 
-// User Dashboard Pages
+// user dashboard pages
 import { DashboardHome } from '../pages/dashboard/DashboardHome';
 import { MyBookingsPage } from '../pages/dashboard/MyBookingsPage';
 import { ProfilePage } from '../pages/dashboard/ProfilePage';
 
-// Admin Dashboard Pages
+// admin dashboard pages
 import { AdminDashboard } from '../pages/admin/AdminDashboard';
 import { FlightManagement } from '../pages/admin/FlightManagement';
 import { BookingManagement } from '../pages/admin/BookingManagement';
@@ -28,7 +28,7 @@ export const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
+        {/* public routes */}
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="flights" element={<SearchFlightsPage />} />
@@ -37,7 +37,7 @@ export const AppRouter = () => {
           <Route path="register" element={<RegisterPage />} />
         </Route>
 
-        {/* User Protected Dashboard Routes */}
+        {/* user protected dashboard routes */}
         <Route
           path="/dashboard"
           element={
@@ -51,7 +51,7 @@ export const AppRouter = () => {
           <Route path="profile" element={<ProfilePage />} />
         </Route>
 
-        {/* Admin Protected Dashboard Routes */}
+        {/* admin protected dashboard routes */}
         <Route
           path="/admin"
           element={
@@ -67,7 +67,7 @@ export const AppRouter = () => {
           <Route path="analytics" element={<AnalyticsPage />} />
         </Route>
 
-        {/* Fallback redirect */}
+        {/* fallback redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
