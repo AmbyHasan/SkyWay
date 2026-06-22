@@ -9,3 +9,22 @@ export const adminService = {
   getAllBookings: (params) => api.get('/admin/bookings', { params }),
   updateBookingStatus: (id, status) => api.patch(`/admin/bookings/${id}/status`, { status }),
 };
+
+
+// Admin page
+// ↓
+// dispatch(fetchDashboardStats())
+// ↓
+// adminSlice async thunk
+// ↓
+// adminService.getDashboardStats()
+// ↓
+// api.js attaches access token
+// ↓
+// Backend checks user role is admin
+// ↓
+// Backend returns stats / flights / bookings
+// ↓
+// adminSlice stores data in state.admin
+// ↓
+// Admin dashboard displays it

@@ -204,7 +204,7 @@ export const RegisterPage = () => {
 
           <Button
             type="submit"
-            className="w-full justify-center mt-6"
+            className="w-full justify-center mt-6 cursor-pointer"
             isLoading={isLoading}
           >
             Register Account

@@ -6,7 +6,7 @@ export const fetchDashboardStats = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await adminService.getDashboardStats();
-      return data.data;
+      return data.data;   //return data.data becomes action.payload, and the fulfilled extraReducer uses that payload to update Redux state.
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch stats'

@@ -9,3 +9,21 @@ export const flightService = {
   updateFlight: (id, data) => api.put(`/flights/${id}`, data),
   deleteFlight: (id) => api.delete(`/flights/${id}`),
 };
+
+// Flight search page
+// ↓
+// dispatch(searchFlights(filters))
+// ↓
+// flightSlice async thunk
+// ↓
+// flightService.searchFlights(filters)
+// ↓
+// api.js sends request + access token if needed
+// ↓
+// Backend flight controller
+// ↓
+// Response returns to flightSlice
+// ↓
+// Redux stores results in state.flights
+// ↓
+// Flight results page displays them
