@@ -133,3 +133,34 @@ export const LoginPage = () => {
     </div>
   );
 };
+
+
+//FLOW FOR LOGIN PAGE
+
+// User fills Login form
+//    ↓
+// LoginPage calls dispatch(loginUser({ email, password }))
+//    ↓
+// Redux dispatches auth/login/pending
+//    ↓
+// state.isLoading = true
+//    ↓
+// authService.login(credentials) sends POST request to backend
+//    ↓
+// Backend validates email and password
+//    ↓
+// Success:
+//   backend sends user + accessToken
+//   token and user saved in localStorage
+//   thunk returns data.data
+//   Redux dispatches auth/login/fulfilled
+//   Redux stores user and token
+//   UI updates / redirects
+
+// Failure:
+//   backend sends error
+//   rejectWithValue returns clean error message
+//   Redux dispatches auth/login/rejected
+//   Redux stores error
+//   Login page displays error
+

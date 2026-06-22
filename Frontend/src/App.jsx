@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import  { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './app/store';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -7,13 +7,13 @@ import { fetchCurrentUser, initializeAuth } from './store/slices/authSlice';
 import { Toaster } from 'react-hot-toast';
 
 const AppContent = () => {
-  const dispatch = useDispatch();
-  const { accessToken, isInitialized } = useSelector((state) => state.auth);
+  const dispatch = useDispatch(); //for sending instruction to the redux
+  const { accessToken} = useSelector((state) => state.auth);  //reading authentication data from redux
 
   useEffect(() => {
     if (accessToken) {
       dispatch(fetchCurrentUser())
-        .unwrap()
+        .unwrap()  //it makes an asyncthunk to behave like a normal JS promise (async thunk is basically a Redux Function used when an action needs extra logic or an API call before state can be updated in the Redux.)
         .catch(() => {
           // Token is expired/invalid
           dispatch(initializeAuth());

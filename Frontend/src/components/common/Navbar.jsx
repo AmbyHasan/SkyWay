@@ -75,7 +75,7 @@ export const Navbar = () => {
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-900 hover:text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-900 hover:text-white cursor-pointer"
             aria-label="Toggle theme"
           >
             {isDark ? (
@@ -94,7 +94,7 @@ export const Navbar = () => {
                   variant="outline"
                   size="sm"
                   icon={user?.role === 'admin' ? Shield : LayoutDashboard}
-                  className="border-slate-700 text-slate-200 hover:border-primary-500 hover:bg-primary-500/10 hover:text-primary-300"
+                  className="border-slate-700 text-slate-200 hover:border-primary-500 hover:bg-primary-500/10 hover:text-primary-300 cursor-pointer"
                 >
                   {user?.role === 'admin' ? 'Admin panel' : 'My trips'}
                 </Button>
@@ -118,7 +118,7 @@ export const Navbar = () => {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400 cursor-pointer"
                 aria-label="Logout"
                 title="Logout"
               >
@@ -131,7 +131,7 @@ export const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-slate-200 hover:bg-slate-900 hover:text-white"
+                  className="text-slate-200 hover:bg-slate-900 hover:text-white cursor-pointer"
                 >
                   Sign in
                 </Button>
@@ -140,7 +140,7 @@ export const Navbar = () => {
               <Link to="/register">
                 <Button
                   size="sm"
-                  className="whitespace-nowrap bg-primary-600 px-4 shadow-lg shadow-primary-600/20 hover:bg-primary-500"
+                  className="whitespace-nowrap bg-primary-600 px-4 shadow-lg shadow-primary-600/20 hover:bg-primary-500 cursor-pointer"
                 >
                   Create account
                 </Button>

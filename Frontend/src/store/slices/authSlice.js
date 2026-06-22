@@ -2,11 +2,28 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { authService } from '../../services/authService';
 import { userService } from '../../services/userService';
 
+//THIS FILE IS THE CENTRAL AUTHENTICATION MANAGER OF THE FRONTEND
+
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  'auth/login',               // this is redux action prefix and redux tookit will automatically produce these three action types -> 1-> auth/login/pending ,2->auth/login/fulfilled  ,3->auth/login/rejected
   async (credentials, { rejectWithValue }) => {
+
     try {
-      const { data } = await authService.login(credentials);
+      const { data } = await authService.login(credentials); //the frontend sends credentials to the backend and waits for its response
+
+      //  {                 this is the response sent by the backend
+      //   "success": true,
+      //   "message": "Login successful",
+      //   "data": {
+      //     "user": {
+      //       "_id": "123",
+      //       "name": "Amber Hasan",
+      //       "email": "amber@example.com",
+      //       "role": "user"
+      //     },
+      //     "accessToken": "eyJhbGciOi..."
+      //   }
+      // }
       localStorage.setItem('accessToken', data.data.accessToken);
       localStorage.setItem('user', JSON.stringify(data.data.user));
       return data.data;
@@ -18,6 +35,17 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+//FLOW -> 
+
+// Login page
+//    ↓ dispatch(loginUser(credentials))
+// authSlice async thunk
+//    ↓ authService.login(credentials)
+// authService
+//    ↓ Axios request
+// Backend: POST /api/auth/login
+
+
 export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
@@ -25,7 +53,7 @@ export const registerUser = createAsyncThunk(
       const { data } = await authService.register(userData);
       localStorage.setItem('accessToken', data.data.accessToken);
       localStorage.setItem('user', JSON.stringify(data.data.user));
-      return data.data;
+      return data.data;   //it returns the object to the fulfilled reducer as action.payload
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || 'Registration failed'
@@ -72,14 +100,14 @@ const storedToken = localStorage.getItem('accessToken');
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: storedUser ? JSON.parse(storedUser) : null,
+    user: storedUser ? JSON.parse(storedUser) : null, //since we used the user in json string format therefore we need to parse it
     accessToken: storedToken || null,
     isAuthenticated: !!storedToken,
     isLoading: false,
     error: null,
-    isInitialized: false,
+    isInitialized: false, // tells the app whether it has finished checking the user’s login/session status after startup.
   },
-  reducers: {
+  reducers: {  //these are synchronous reducers that update Redux state immediately without calling the backend
     clearError: (state) => {
       state.error = null;
     },
@@ -92,9 +120,9 @@ const authSlice = createSlice({
       state.isInitialized = true;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: (builder) => {   //react to success/failure/loading of async thunks
     builder
-      // Login
+      // login
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -110,7 +138,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Register
+
+
+      // register
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -126,7 +156,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // Logout
+
+
+      // logout
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.accessToken = null;
@@ -137,7 +169,9 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.isAuthenticated = false;
       })
-      // Fetch current user
+
+
+      // fetch current user
       .addCase(fetchCurrentUser.pending, (state) => {
         state.isLoading = true;
       })
