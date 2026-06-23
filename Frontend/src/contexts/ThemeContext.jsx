@@ -1,24 +1,25 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const ThemeContext = createContext();
+const ThemeContext = createContext();  //create an empty context container
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;  //if the user has not selected any theme yet, then the user's sytem's theme will be implemented
   });
 
+  //perform the side effect after the theme changes
   useEffect(() => {
-    const root = document.documentElement;
+    const root = document.documentElement;  //<html>
     if (isDark) {
-      root.classList.add('dark');
+      root.classList.add('dark');     //<html class="dark">
       localStorage.setItem('theme', 'dark');
-    } else {
+    } else {                             //<html>
       root.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-  }, [isDark]);
+  }, [isDark]);  //this hook runs when the app mounts and when the isDark changes or theme changes
 
   const toggleTheme = () => setIsDark((prev) => !prev);
 
