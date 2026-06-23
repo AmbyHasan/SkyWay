@@ -1,31 +1,46 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { registerUser, clearError } from '../../store/slices/authSlice';
-import { useAuth } from '../../hooks/useAuth';
-import { User, Mail, Lock, Phone, Plane, AlertCircle } from 'lucide-react';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { registerUser, clearError } from "../../store/slices/authSlice";
+import { useAuth } from "../../hooks/useAuth";
+import {
+  User,
+  Mail,
+  Lock,
+  Phone,
+  Plane,
+  AlertCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import { Input } from "../../components/ui/Input";
+import { Button } from "../../components/ui/Button";
+import { Card } from "../../components/ui/Card";
+import toast from "react-hot-toast";
 
 export const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const { error, isLoading, isAuthenticated } = useAuth();
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      phone: '',
-    }
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      phone: "",
+    },
   });
 
-  const passwordValue = watch('password', '');
+  const passwordValue = watch("password", "");
 
   useEffect(() => {
     dispatch(clearError());
@@ -33,16 +48,16 @@ export const RegisterPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data) => {
     const resultAction = await dispatch(registerUser(data));
     if (registerUser.fulfilled.match(resultAction)) {
-      toast.success('Registration successful! Welcome aboard.');
+      toast.success("Registration successful! Welcome aboard.");
     } else {
-      toast.error(resultAction.payload || 'Registration failed');
+      toast.error(resultAction.payload || "Registration failed");
     }
   };
 
@@ -55,9 +70,10 @@ export const RegisterPage = () => {
     if (/[0-9]/.test(passwordValue)) strength++;
     if (/[^A-Za-z0-9]/.test(passwordValue)) strength++;
 
-    if (strength <= 1) return { label: 'Weak', color: 'bg-red-500' };
-    if (strength === 2 || strength === 3) return { label: 'Fair', color: 'bg-amber-500' };
-    return { label: 'Strong', color: 'bg-emerald-500' };
+    if (strength <= 1) return { label: "Weak", color: "bg-red-500" };
+    if (strength === 2 || strength === 3)
+      return { label: "Fair", color: "bg-amber-500" };
+    return { label: "Strong", color: "bg-emerald-500" };
   };
 
   const strength = getPasswordStrength();
@@ -94,14 +110,14 @@ export const RegisterPage = () => {
               placeholder="Your name"
               icon={User}
               error={errors.firstName?.message}
-              {...register('firstName', { required: 'First name is required' })}
+              {...register("firstName", { required: "First name is required" })}
             />
             <Input
               label="Last Name"
               placeholder="Your surname"
               icon={User}
               error={errors.lastName?.message}
-              {...register('lastName', { required: 'Last name is required' })}
+              {...register("lastName", { required: "Last name is required" })}
             />
           </div>
 
@@ -111,11 +127,11 @@ export const RegisterPage = () => {
             placeholder="name@example.com"
             icon={Mail}
             error={errors.email?.message}
-            {...register('email', {
-              required: 'Email address is required',
+            {...register("email", {
+              required: "Email address is required",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address',
+                message: "Invalid email address",
               },
             })}
           />
@@ -126,26 +142,40 @@ export const RegisterPage = () => {
             placeholder="1234567890"
             icon={Phone}
             error={errors.phone?.message}
-            {...register('phone', {
-              required: 'Phone number is required',
+            {...register("phone", {
+              required: "Phone number is required",
               pattern: {
                 value: /^[0-9+() -]{8,15}$/,
-                message: 'Invalid phone number format',
+                message: "Invalid phone number format",
               },
             })}
           />
 
           <Input
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="••••••••"
             icon={Lock}
             error={errors.password?.message}
-            {...register('password', {
-              required: 'Password is required',
+            rightElement={
+              <button
+                type="button"
+                onClick={() => setShowPassword((previous) => !previous)}
+                className="text-slate-400 transition-colors hover:text-primary-500 dark:hover:text-primary-400"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            }
+            {...register("password", {
+              required: "Password is required",
               minLength: {
                 value: 6,
-                message: 'Password must be at least 6 characters',
+                message: "Password must be at least 6 characters",
               },
             })}
           />
@@ -157,14 +187,24 @@ export const RegisterPage = () => {
                 <span className="font-semibold">{strength.label}</span>
               </div>
               <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                <div className={`h-full ${strength.color} transition-all duration-300`} style={{ width: strength.label === 'Weak' ? '33%' : strength.label === 'Fair' ? '66%' : '100%' }} />
+                <div
+                  className={`h-full ${strength.color} transition-all duration-300`}
+                  style={{
+                    width:
+                      strength.label === "Weak"
+                        ? "33%"
+                        : strength.label === "Fair"
+                          ? "66%"
+                          : "100%",
+                  }}
+                />
               </div>
             </div>
           )}
 
           <Button
             type="submit"
-            className="w-full justify-center mt-6"
+            className="w-full justify-center mt-6 cursor-pointer"
             isLoading={isLoading}
           >
             Register Account
@@ -172,8 +212,11 @@ export const RegisterPage = () => {
         </form>
 
         <p className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
-          Already have an account?{' '}
-          <Link to="/login" className="font-semibold text-primary-600 dark:text-primary-400 hover:underline">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-semibold text-primary-600 dark:text-primary-400 hover:underline"
+          >
             Sign In
           </Link>
         </p>

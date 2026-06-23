@@ -1,7 +1,7 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux'; //useSelector is used for reading the data from the redux and useDispatch is used send action/thunks to the Redux
+import { useCallback } from 'react'; //used for memorizing a function
 import {
-  loginUser,
+  loginUser,   //these are action thunks from authSlice
   registerUser,
   logoutUser,
   fetchCurrentUser,
@@ -10,16 +10,15 @@ import {
 
 export const useAuth = () => {
   const dispatch = useDispatch();
-  const { user, isAuthenticated, isLoading, error, isInitialized } =
-    useSelector((state) => state.auth);
+  const { user, isAuthenticated, isLoading, error, isInitialized } = useSelector((state) => state.auth);
 
   const login = useCallback(
     (credentials) => dispatch(loginUser(credentials)),
-    [dispatch]
+    [dispatch] //react will recreate this function only if dispatch changes , which does not happen usually
   );
 
   const register = useCallback(
-    (userData) => dispatch(registerUser(userData)),
+    (userData) => dispatch(registerUser(userData)),   //register(userData) becomes dispatch(registerUser(userData))
     [dispatch]
   );
 
@@ -35,17 +34,31 @@ export const useAuth = () => {
     [dispatch]
   );
 
-  return {
+  return {  
     user,
     isAuthenticated,
     isLoading,
     error,
     isInitialized,
     isAdmin: user?.role === 'admin',
-    login,
+    login,  //dispatch(loginUser(credentials))
     register,
     logout,
     refreshUser,
     clearAuthError,
   };
 };
+
+
+
+// Component
+// ↓
+// useAuth()
+// ↓
+// authSlice actions + Redux state
+// ↓
+// authService
+// ↓
+// api.js
+// ↓
+// Backend

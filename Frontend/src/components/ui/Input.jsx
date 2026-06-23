@@ -1,18 +1,19 @@
-import React from 'react';
+import React from "react";
 
 export const Input = React.forwardRef(
   (
     {
       label,
       error,
-      type = 'text',
-      className = '',
-      inputClassName = '',
+      type = "text",
+      className = "",
+      inputClassName = "",
       icon: Icon,
+      rightElement,
       id,
       ...props
     },
-    ref
+    ref,
   ) => {
     const inputId = id || props.name;
 
@@ -39,20 +40,28 @@ export const Input = React.forwardRef(
             id={inputId}
             type={type}
             className={`h-12 w-full rounded-xl border bg-white px-4 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:ring-4 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
-              Icon ? 'pl-11' : ''
-            } ${
+              Icon ? "pl-11" : ""
+            } ${rightElement ? "pr-11" : ""} ${
               error
-                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/15'
-                : 'border-slate-300 focus:border-primary-500 focus:ring-primary-500/15 dark:border-slate-700'
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500/15"
+                : "border-slate-300 focus:border-primary-500 focus:ring-primary-500/15 dark:border-slate-700"
             } ${inputClassName}`}
             {...props}
           />
+
+          {rightElement && (
+            <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+              {rightElement}
+            </div>
+          )}
         </div>
 
-        {error && <p className="mt-2 text-xs font-medium text-red-500">{error}</p>}
+        {error && (
+          <p className="mt-2 text-xs font-medium text-red-500">{error}</p>
+        )}
       </div>
     );
-  }
+  },
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";

@@ -16,12 +16,12 @@ export const ProtectedRoute = ({ children, adminOnly = false }) => {
   }
 
   if (!isAuthenticated) {
-    // Redirect to login page and store the original location they tried to reach
+    // redirect to login page and store the original location they tried to reach so that after successful login we can redirect the user to the page where he wanted to go
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (adminOnly && user?.role !== 'admin') {
-    // Redirect non-admins to user dashboard
+    // redirect non-admins to user dashboard
     return <Navigate to="/dashboard" replace />;
   }
 

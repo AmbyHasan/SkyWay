@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { bookingService } from '../../services/bookingService';
 
 export const createBooking = createAsyncThunk(
-  'bookings/create',
+
+  'bookings/create', //redux action prefix for which we have 3 action types -> pending ,fulfilled, failed
   async (bookingData, { rejectWithValue }) => {
     try {
       const { data } = await bookingService.createBooking(bookingData);
@@ -80,7 +81,7 @@ const bookingSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
+    builder     //when this external action happens, run this state-update logic.
       .addCase(createBooking.pending, (state) => {
         state.isBooking = true;
         state.error = null;
@@ -125,7 +126,7 @@ const bookingSlice = createSlice({
         const idx = state.bookings.findIndex(
           (b) => b._id === action.payload._id
         );
-        if (idx !== -1) {
+        if (idx !== -1) {  //mark that particular booking as cancelled
           state.bookings[idx] = action.payload;
         }
         if (state.selectedBooking?._id === action.payload._id) {
@@ -139,6 +140,5 @@ const bookingSlice = createSlice({
   },
 });
 
-export const { clearSelectedBooking, clearNewBooking, clearBookingError } =
-  bookingSlice.actions;
+export const { clearSelectedBooking, clearNewBooking, clearBookingError } = bookingSlice.actions;
 export default bookingSlice.reducer;
