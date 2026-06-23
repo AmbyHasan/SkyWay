@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import {
+
   ArrowRight,
   Award,
   Calendar,
@@ -21,17 +23,19 @@ import { AIRPORTS } from '../../constants';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { formatPrice } from '../../utils';
+import { useAuth } from '../../hooks/useAuth';
 
 export const LandingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { featuredFlights, isLoading } = useSelector((state) => state.flights);
+  const {isAuthenticated}=useAuth();
 
   const [searchParams, setSearchParams] = useState({
     origin: 'DEL',
     destination: 'BOM',
-    date: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+    date: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],    //current day + 2 days -> 2026-06-25T07:30:00.000Z , split and only get the date part
     passengers: 1,
     seatClass: 'economy',
   });
@@ -54,7 +58,13 @@ export const LandingPage = () => {
       return;
     }
 
+    if(isAuthenticated){
     navigate(`/flights?${new URLSearchParams(searchParams).toString()}`);
+    }
+    else{
+         toast.error('Please log in to search for flights.');
+         navigate(`/login`)
+    }
   };
 
   const features = [
@@ -76,24 +86,19 @@ export const LandingPage = () => {
   ];
 
   return (
-    <div className="bg-slate-950">
-      {/* ================= HERO ================= */}
-      <section className="relative isolate overflow-hidden border-b border-slate-800 bg-slate-950">
-        {/* Background glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(14,165,233,0.34),transparent_27%),radial-gradient(circle_at_15%_90%,rgba(37,99,235,0.18),transparent_28%)]" />
+    <div className=" dark:bg-slate-800 bg-slate-100">
 
-        {/* Decorative circles */}
-        <div className="absolute right-[10%] top-24 h-72 w-72 rounded-full bg-primary-500/10 blur-3xl" />
-        <div className="absolute right-[28%] top-44 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
+      {/* ================= hero ================= */}
+      <section className="relative isolate overflow-hidden border-b border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950">
 
-        <div className="relative w-full mx-auto max-w-7xl px-5 pb-16 pt-16 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8 lg:pb-24 lg:pt-24">
-          {/* Hero heading */}
+      <div className="relative w-full mx-auto max-w-7xl px-5 pb-16 pt-16 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8 lg:pb-24 lg:pt-24">
+          {/* hero heading */}
           <div className="max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45 }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary-300/20 bg-primary-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-primary-200"
+              className="inline-flex items-center gap-2 rounded-full border border-primary-300/20 dark:bg-primary-400/10 bg-primary-200 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] dark:text-primary-200 text-blue-950"
             >
               <Plane className="h-4 w-4" />
               Premium flight booking platform
@@ -103,12 +108,12 @@ export const LandingPage = () => {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.08 }}
-              className="mt-6 text-3xl font-extrabold tracking-[-0.05em] text-white sm:text-5xl lg:text-7xl lg:leading-[1.04]"
+              className="mt-6 text-3xl font-extrabold tracking-[-0.05em] dark:text-white text-blue-950 sm:text-5xl lg:text-7xl lg:leading-[1.04]"
             >
               Fly beyond boundaries
               <br />
               with{' '}
-              <span className="bg-gradient-to-r from-primary-300 via-cyan-300 to-primary-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r dark:from-primary-300 bg-primary-500 dark:via-cyan-300 via-cyan-600  dark:to-primary-400 to-primary-700 bg-clip-text text-transparent">
                 SkyWay
               </span>
               .
@@ -118,7 +123,7 @@ export const LandingPage = () => {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.16 }}
-              className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg"
+              className="mt-6 max-w-2xl text-base leading-7 dark:text-slate-300 text-secondary-700 sm:text-lg"
             >
               Search routes, compare travel options, and manage every booking through
               one polished flight-booking experience.
@@ -130,18 +135,18 @@ export const LandingPage = () => {
               transition={{ duration: 0.5, delay: 0.22 }}
               className="mt-7 flex flex-wrap gap-x-7 gap-y-3 text-sm font-medium text-slate-200"
             >
-              <span className="inline-flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary-300" />
+              <span className="inline-flex items-center gap-2 text-blue-950 dark:text-slate-200">
+                <CheckCircle2 className="h-4 w-4 dark:text-green-300 text-green-800" />
                 Secure booking
               </span>
 
-              <span className="inline-flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary-300" />
+              <span className="inline-flex items-center gap-2 text-blue-950 dark:text-slate-200">
+                <CheckCircle2 className="h-4 w-4 dark:text-green-300 text-green-800" />
                 Flexible travel choices
               </span>
 
-              <span className="inline-flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary-300" />
+              <span className="inline-flex items-center gap-2 text-blue-950 dark:text-slate-200">
+                <CheckCircle2 className="h-4 w-4 dark:text-green-300 text-green-800" />
                 Instant confirmation
               </span>
             </motion.div>
@@ -153,19 +158,19 @@ export const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.3 }}
             onSubmit={handleSearch}
-            className="relative z-10 mt-12 rounded-3xl border border-white/20 bg-white p-5 shadow-2xl shadow-black/40 sm:p-6 lg:p-7"
+            className="relative z-10 mt-12 rounded-3xl border dark:border-white/20 border-blue-500 dark:bg-white bg-cyan-500 p-5 shadow-2xl shadow-black/40 sm:p-6 lg:p-7"
           >
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-base font-extrabold text-slate-900">
                   Find your next flight
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm dark:text-slate-500 text-blue-900 ">
                   Choose your route and travel preferences.
                 </p>
               </div>
 
-              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-primary-50 px-3 py-1.5 text-xs font-bold text-primary-700">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-green-300 px-3 py-1.5 text-xs font-bold text-green-950">
                 <ShieldCheck className="h-4 w-4" />
                 Secure booking
               </div>
@@ -175,7 +180,7 @@ export const LandingPage = () => {
               {/* From */}
               <div>
                 <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-slate-500">
-                  <PlaneTakeoff className="h-4 w-4 text-primary-600" />
+                  <PlaneTakeoff className="h-4 w-4 dark:text-primary-600 text-primary-800" />
                   From
                 </label>
 
@@ -195,7 +200,7 @@ export const LandingPage = () => {
               {/* To */}
               <div>
                 <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-slate-500">
-                  <PlaneLanding className="h-4 w-4 text-primary-600" />
+                  <PlaneLanding className="h-4 w-4 dark:text-primary-600 text-primary-800" />
                   To
                 </label>
 
@@ -217,7 +222,7 @@ export const LandingPage = () => {
               {/* Departure */}
               <div>
                 <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-slate-500">
-                  <Calendar className="h-4 w-4 text-primary-600" />
+                  <Calendar className="h-4 w-4 dark:text-primary-600 text-primary-900" />
                   Departure
                 </label>
 
@@ -233,7 +238,7 @@ export const LandingPage = () => {
               {/* Travellers */}
               <div>
                 <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-slate-500">
-                  <Users className="h-4 w-4 text-primary-600" />
+                  <Users className="h-4 w-4 dark:text-primary-600 text-primary-900" />
                   Travellers
                 </label>
 
@@ -272,7 +277,7 @@ export const LandingPage = () => {
               <Button
                 type="submit"
                 size="lg"
-                className="h-12 w-full rounded-xl px-5 shadow-lg shadow-primary-600/30"
+                className="h-12 w-full cursor-pointer rounded-xl px-5 shadow-lg shadow-primary-600/30"
               >
                 <Search className="h-5 w-5" />
                 Search flights
@@ -283,26 +288,26 @@ export const LandingPage = () => {
       </section>
 
       {/* ================= FEATURED FLIGHTS ================= */}
-      <section className="bg-slate-950 py-16 sm:py-20">
+      <section className="dark:bg-slate-950 bg-slate-100 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.15em] text-primary-400">
+              <p className="text-sm font-bold uppercase tracking-[0.15em] dark:text-primary-400 text-primary-700 ">
                 Popular choices
               </p>
 
-              <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              <h2 className="mt-2 text-3xl font-extrabold tracking-tight dark:text-white text-primary-800 sm:text-4xl">
                 Popular routes this week
               </h2>
 
-              <p className="mt-3 text-slate-400">
+              <p className="mt-3 dark:text-slate-400  text-primary-700 ">
                 Discover available flights and start planning your next journey.
               </p>
             </div>
 
             <Link
               to="/flights"
-              className="inline-flex w-fit items-center gap-2 text-sm font-bold text-primary-400 transition hover:text-primary-300"
+              className="inline-flex w-fit items-center gap-2 text-sm font-bold dark:text-primary-400 text-primary-600 transition  dark:hover:text-primary-300 hover:text-primary-700"
             >
               Explore all flights
               <ArrowRight className="h-4 w-4" />
@@ -364,6 +369,8 @@ export const LandingPage = () => {
                         </div>
                       </div>
 
+
+
                       <div className="mt-7 flex items-end justify-between border-t border-slate-800 pt-5">
                         <div>
                           <p className="text-xs font-medium text-slate-400">
@@ -404,18 +411,18 @@ export const LandingPage = () => {
       </section>
 
       {/* ================= BENEFITS ================= */}
-      <section className="bg-slate-950 pb-20 pt-4 sm:pb-24">
+      <section className="dark:bg-slate-950 bg-slate-100 pb-20 pt-4 sm:pb-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <div className="mb-9">
-            <p className="text-sm font-bold uppercase tracking-[0.15em] text-primary-400">
+            <p className="text-sm font-bold uppercase tracking-[0.15em] dark:text-primary-400 text-primary-500">
               Why SkyWay
             </p>
 
-            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight dark:text-white text-primary-800 sm:text-4xl">
               Travel planning that feels effortless
             </h2>
 
-            <p className="mt-3 text-slate-400">
+            <p className="mt-3 dark:text-slate-400 text-blue-950">
               Everything you need to search, book, and manage your journey in one place.
             </p>
           </div>
@@ -427,18 +434,18 @@ export const LandingPage = () => {
               return (
                 <div
                   key={feature.title}
-                  className="flex items-start gap-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-primary-500/40 hover:bg-slate-900"
+                  className="flex items-start gap-5 bg-cyan-600 rounded-2xl border dark:border-slate-800 dark:bg-slate-900/60 p-6 transition hover:-translate-y-1 hover:border-primary-500/40 hover:bg-slate-900"
                 >
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary-100 text-primary-600">
                     <Icon className="h-7 w-7" />
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-white">
+                    <h3 className="text-lg font-bold text-white hover:text-green-400 ">
                       {feature.title}
                     </h3>
 
-                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                    <p className="mt-2 text-sm leading-6 text-white hover:text-slate-400">
                       {feature.description}
                     </p>
                   </div>

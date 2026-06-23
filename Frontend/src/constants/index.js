@@ -1,3 +1,5 @@
+
+//For landing page
 export const AIRPORTS = [
   { code: 'DEL', city: 'New Delhi', country: 'India' },
   { code: 'BOM', city: 'Mumbai', country: 'India' },
@@ -10,6 +12,8 @@ export const AIRPORTS = [
   { code: 'LHR', city: 'London', country: 'UK' },
   { code: 'JFK', city: 'New York', country: 'USA' },
 ];
+
+
 
 export const SEAT_CLASSES = [
   { value: 'economy', label: 'Economy' },
