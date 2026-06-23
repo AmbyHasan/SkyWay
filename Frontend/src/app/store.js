@@ -11,5 +11,20 @@ export const store = configureStore({
     bookings: bookingReducer,
     admin: adminReducer,
   },
-  devTools: import.meta.env.DEV,
+ 
 });
+
+
+// store.js creates the global store
+// ↓
+// App.jsx gives it to <Provider store={store}>
+// ↓
+// Any child component can use useDispatch()
+// ↓
+// useDispatch() sends actions to the store
+// ↓
+// The correct slice reducer updates its state
+// ↓
+// Any child component can use useSelector()
+// ↓
+// useSelector() reads the required part of state and re-renders when it changes

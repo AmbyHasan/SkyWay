@@ -1,6 +1,67 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { flightService } from '../../services/flightService';
 
+
+//Response ->
+// "success": true,
+//     "message": "Flights fetched successfully",
+//     "data": {
+//         "flights": [
+//             {
+//                 "seats": {
+//                     "economy": {
+//                         "total": 128,
+//                         "available": 111,
+//                         "price": 10726
+//                     },
+//                     "business": {
+//                         "total": 25,
+//                         "available": 24,
+//                         "price": 32178
+//                     }
+//                 },
+//                 "_id": "6a363325e9d340d22bfb6d5c",
+//                 "flightNumber": "EM37519",
+//                 "airline": "Emirates",
+//                 "airlineLogo": null,
+//                 "origin": {
+//                     "code": "CCU",
+//                     "city": "Kolkata",
+//                     "airport": "Netaji Subhas Chandra Bose International",
+//                     "country": "India"
+//                 },
+//                 "destination": {
+//                     "code": "DEL",
+//                     "city": "New Delhi",
+//                     "airport": "Indira Gandhi International",
+//                     "country": "India"
+//                 },
+//                 "flightDate": "2026-06-21T08:30:00.000Z",
+//                 "departureTime": "2026-06-21T08:30:00.000Z",
+//                 "arrivalTime": "2026-06-21T20:03:00.000Z",
+//                 "status": "scheduled",
+//                 "amenities": [
+//                     "wifi",
+//                     "meals",
+//                     "usb"
+//                 ],
+//                 "aircraft": null,
+//                 "stops": 0,
+//                 "isFeatured": false,
+//                 "isDeleted": false,
+//                 "__v": 0,
+//                 "createdAt": "2026-06-20T06:28:53.554Z",
+//                 "updatedAt": "2026-06-20T06:28:53.554Z",
+//                 "durationFormatted": "NaNh NaNm",
+//                 "id": "6a363325e9d340d22bfb6d5c"
+//             },
+//  "pagination": {
+//         "page": 1,
+//         "limit": 10,
+//         "total": 20,
+//         "pages": 2
+//     }
+            
 export const searchFlights = createAsyncThunk(
   'flights/search',
   async (params, { rejectWithValue }) => {
@@ -106,6 +167,5 @@ const flightSlice = createSlice({
   },
 });
 
-export const { clearSelectedFlight, setSearchParams, clearFlights } =
-  flightSlice.actions;
+export const { clearSelectedFlight, setSearchParams, clearFlights } = flightSlice.actions;
 export default flightSlice.reducer;
