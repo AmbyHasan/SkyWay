@@ -28,8 +28,10 @@ export const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
-      {/* Sidebar - Desktop */}
+      {/* sidebar of desktop */}
+
       <aside className="hidden md:flex flex-col w-64 bg-slate-900 border-r border-slate-800 text-slate-400">
+       {/* logo */}
         <div className="p-6 border-b border-slate-800">
           <Link to="/" className="flex items-center gap-2">
             <div className="p-2 bg-primary-600 rounded-lg text-white">
@@ -41,6 +43,7 @@ export const AdminLayout = () => {
           </Link>
         </div>
 
+           {/* navlinks */}
         <nav className="flex-1 px-4 py-6 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -62,10 +65,11 @@ export const AdminLayout = () => {
           })}
         </nav>
 
+         {/* theme button */}
         <div className="p-4 border-t border-slate-800 space-y-2">
           <button
             onClick={toggleTheme}
-            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white"
+            className="w-full cursor-pointer flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white"
           >
             <span className="flex items-center gap-3">
               {isDark ? <Sun className="h-5 w-5 text-amber-500" /> : <Moon className="h-5 w-5" />}
@@ -73,9 +77,10 @@ export const AdminLayout = () => {
             </span>
           </button>
 
+           {/* logout button */}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-950/20 hover:text-red-300"
+            className="w-full cursor-pointer flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-950/20 hover:text-red-300"
           >
             <LogOut className="h-5 w-5" />
             Logout
@@ -83,9 +88,9 @@ export const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Wrapper */}
+      {/* main wrapper i.e the content on the rightside of the sidebar */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
+        {/* header */}
         <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-6 z-10">
           <div className="flex items-center gap-4">
             <button
@@ -96,7 +101,7 @@ export const AdminLayout = () => {
             </button>
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+              className="flex cursor-pointer items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Portal
@@ -105,7 +110,7 @@ export const AdminLayout = () => {
 
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-semibold">{user?.firstName} {user?.lastName}</p>
+              <p className="text-sm font-semibold dark:text-amber-500">{user?.firstName} {user?.lastName}</p>
               <p className="text-xs text-red-500 font-bold uppercase tracking-wider">Administrator</p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950 flex items-center justify-center text-red-700 dark:text-red-300 font-bold border border-red-200/50 dark:border-red-800/30">
@@ -114,20 +119,26 @@ export const AdminLayout = () => {
           </div>
         </header>
 
-        {/* Content Body */}
+        {/* content body */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50/50 dark:bg-slate-950/50">
           <Outlet />
         </main>
       </div>
 
-      {/* Mobile Drawer Sidebar */}
+      {/* mobile drawer sidebar */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
+
+          {/* this will make the bg blur when the sidebar opens and when you will click anywhere out of the sidebar then the sidebar gets closed */}
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+
           <aside className="absolute inset-y-0 left-0 w-64 bg-slate-900 flex flex-col z-10 text-slate-400">
+            {/* header */}
             <div className="p-6 flex items-center justify-between border-b border-slate-800">
               <Link to="/" className="flex items-center gap-2">
-                <Plane className="h-6 w-6 text-primary-600" />
+                <div className="p-2 bg-primary-600 rounded-lg text-white ">
+                <Plane className="h-6 w-6 animate-float" />
+                  </div>
                 <span className="text-xl font-bold text-white">SKYWAY</span>
               </Link>
               <button onClick={() => setSidebarOpen(false)}>
@@ -135,6 +146,8 @@ export const AdminLayout = () => {
               </button>
             </div>
 
+
+             {/* navlinks */}
             <nav className="flex-1 px-4 py-6 space-y-1">
               {menuItems.map((item) => {
                 const Icon = item.icon;
@@ -155,7 +168,8 @@ export const AdminLayout = () => {
                 );
               })}
             </nav>
-
+  
+              {/* toggle theme */}
             <div className="p-4 border-t border-slate-800 space-y-2">
               <button
                 onClick={toggleTheme}
@@ -166,6 +180,8 @@ export const AdminLayout = () => {
                   Theme
                 </span>
               </button>
+
+              {/* logout button */}
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-950/20"
