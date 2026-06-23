@@ -75,6 +75,7 @@ export const AdminLayout = () => {
               {isDark ? <Sun className="h-5 w-5 text-amber-500" /> : <Moon className="h-5 w-5" />}
               Theme
             </span>
+            <span className="text-xs text-slate-400">{isDark ? 'Dark' : 'Light'}</span>
           </button>
 
            {/* logout button */}
