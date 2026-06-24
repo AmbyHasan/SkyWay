@@ -55,8 +55,16 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    const requestUrl = originalRequest?.url || "";
+
+// login, register, and refresh requests must never trigger token refresh.
+ const isAuthRequest =
+  requestUrl.includes("/auth/login") ||
+  requestUrl.includes("/auth/register") ||
+  requestUrl.includes("/auth/refresh");
+
     //if the backend returned 401 unauthorized and this request has not already been retrired , then try refreshing the access token
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthRequest) {
 
       if (isRefreshing) {  //some request is using the /auth/refresh api right now so admit current request in the failed queue
         return new Promise((resolve, reject) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -25,8 +25,9 @@ export const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { error, isLoading, isAuthenticated } = useAuth();
 
+  //react hook form
   const {
-    register,
+    register, //this connects the input field to the react hook form
     handleSubmit,
     watch,
     formState: { errors },
@@ -40,8 +41,9 @@ export const RegisterPage = () => {
     },
   });
 
-  const passwordValue = watch("password", "");
+  const passwordValue = watch("password", "");  //it observere the field live
 
+  //clearing previous auth errors if any
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
@@ -52,6 +54,15 @@ export const RegisterPage = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  //when the frontend validation is completed
+  //React hook form give us the following data object
+//   data = {
+//   firstName: "Amber",
+//   lastName: "Hasan",
+//   email: "amber@example.com",
+//   phone: "9876543210",
+//   password: "Password@123",
+// };
   const onSubmit = async (data) => {
     const resultAction = await dispatch(registerUser(data));
     if (registerUser.fulfilled.match(resultAction)) {
@@ -61,7 +72,7 @@ export const RegisterPage = () => {
     }
   };
 
-  // Basic check for password strength
+  // check for password strength
   const getPasswordStrength = () => {
     if (!passwordValue) return null;
     let strength = 0;
@@ -224,3 +235,21 @@ export const RegisterPage = () => {
     </div>
   );
 };
+
+
+ 
+// FLOW ->
+
+// RegisterPage
+//    ↓
+// dispatch(registerUser(data))
+//    ↓
+// authSlice thunk
+//    ↓
+// authService.register(data)
+//    ↓
+// Axios API request
+//    ↓
+// Backend registration controller
+//    ↓
+// Redux state updates
