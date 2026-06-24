@@ -152,7 +152,7 @@ export const LandingPage = () => {
             </motion.div>
           </div>
 
-          {/* ================= SEARCH CARD ================= */}
+          {/* ================= search card ================= */}
           <motion.form
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
@@ -287,7 +287,7 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ================= FEATURED FLIGHTS ================= */}
+      {/* ================= featured flights ================= */}
       <section className="dark:bg-slate-950 bg-slate-100 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -410,7 +410,7 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ================= BENEFITS ================= */}
+      {/* ================= benefits ================= */}
       <section className="dark:bg-slate-950 bg-slate-100 pb-20 pt-4 sm:pb-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <div className="mb-9">

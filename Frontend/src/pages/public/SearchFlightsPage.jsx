@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchFlights } from '../../store/slices/flightSlice';
 import { AIRPORTS } from '../../constants';
-import { Plane, Search, Filter, ArrowUpDown, ChevronLeft, ChevronRight, Sliders, PlaneTakeoff, Info, Check } from 'lucide-react';
+import { Plane, Search,  ChevronLeft, ChevronRight, Sliders} from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -17,13 +17,15 @@ export const SearchFlightsPage = () => {
 
   const { flights, pagination, isLoading } = useSelector((state) => state.flights);
 
-  // Search parameters state
+  // search parameters state
+
+  //api/flights?origin=DEL&destination=BOM&date=2026-06-26&seatClass=economy&passengers=1&page=1&limit=5&sort=price_asc
   const [origin, setOrigin] = useState(searchParams.get('origin') || 'DEL');
   const [destination, setDestination] = useState(searchParams.get('destination') || 'BOM');
   const [date, setDate] = useState(searchParams.get('date') || new Date().toISOString().split('T')[0]);
   const [seatClass, setSeatClass] = useState(searchParams.get('seatClass') || 'economy');
 
-  // Filter state
+  // filter state
   const [stops, setStops] = useState(searchParams.get('stops') || '');
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
@@ -31,6 +33,7 @@ export const SearchFlightsPage = () => {
   const [sortOrder, setSortOrder] = useState(searchParams.get('sortOrder') || 'asc');
   const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'));
 
+//these are filters which are optional so we will include them after performing a check
   const buildSortParam = (field, order) => {
     if (field.includes('price')) {
       return order === 'desc' ? 'price_desc' : 'price_asc';
@@ -39,7 +42,7 @@ export const SearchFlightsPage = () => {
     return 'departureTime';
   };
 
-  // Trigger search flights
+  // trigger search flights
   const executeSearch = () => {
     const params = {
       origin: searchParams.get('origin') || origin,
@@ -50,15 +53,16 @@ export const SearchFlightsPage = () => {
       page: parseInt(searchParams.get('page') || String(page)),
       limit: 5,
       sort: buildSortParam(
-        searchParams.get('sortBy') || sortBy,
-        searchParams.get('sortOrder') || sortOrder
-      ),
+        searchParams.get('sortBy') || sortBy,    //price
+        searchParams.get('sortOrder') || sortOrder  //departure time
+      ), 
     };
 
     const stopsParam = searchParams.get('stops') ?? stops;
     const minPriceParam = searchParams.get('minPrice') ?? minPrice;
     const maxPriceParam = searchParams.get('maxPrice') ?? maxPrice;
 
+    //converting it into number as url passes data in the form of string
     if (stopsParam !== '') params.stops = Number(stopsParam);
     if (minPriceParam !== '') params.minPrice = Number(minPriceParam);
     if (maxPriceParam !== '') params.maxPrice = Number(maxPriceParam);
@@ -82,10 +86,11 @@ export const SearchFlightsPage = () => {
     updateQueryParams({ stops, minPrice, maxPrice, sortBy, sortOrder, page: 1 });
   };
 
+  //this query saves the existing params
   const updateQueryParams = (newParams) => {
-    const current = Object.fromEntries(searchParams.entries());
-    const merged = { ...current, ...newParams };
-    // Remove empty parameters
+    const current = Object.fromEntries(searchParams.entries());  //converting current params values into proper json format
+    const merged = { ...current, ...newParams };  //inserting the new params into existing ones
+    // remove empty parameters
     Object.keys(merged).forEach((key) => {
       if (merged[key] === '' || merged[key] === undefined || merged[key] === null) {
         delete merged[key];
@@ -103,11 +108,14 @@ export const SearchFlightsPage = () => {
 
   return (
     <div className="skyway-container space-y-8 pb-16 pt-8">
-      {/* Search Header */}
-      <Card className="p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-md">
+      {/* search header */}
+
+      <Card className="p-6 bg-cyan-200 dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-md">
         <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+
+          {/* from */}
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">From</label>
+            <label className="block text-xs font-bold dark:text-slate-400 text-blue-950 uppercase tracking-wider mb-2">From</label>
             <select
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
@@ -118,8 +126,10 @@ export const SearchFlightsPage = () => {
               ))}
             </select>
           </div>
+
+        {/*to */}
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">To</label>
+            <label className="block text-xs font-bold dark:text-slate-400 text-blue-950 uppercase tracking-wider mb-2">To</label>
             <select
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
@@ -130,8 +140,10 @@ export const SearchFlightsPage = () => {
               ))}
             </select>
           </div>
+
+           {/* date */}
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Date</label>
+            <label className="block text-xs font-bold dark:text-slate-400 text-blue-950 uppercase tracking-wider mb-2">Date</label>
             <input
               type="date"
               value={date}
@@ -139,8 +151,10 @@ export const SearchFlightsPage = () => {
               className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
+
+          {/* cabin class */}
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Cabin Class</label>
+            <label className="block text-xs font-bold dark:text-slate-400 text-blue-950 uppercase tracking-wider mb-2">Cabin Class</label>
             <select
               value={seatClass}
               onChange={(e) => setSeatClass(e.target.value)}
@@ -150,24 +164,29 @@ export const SearchFlightsPage = () => {
               <option value="business">Business</option>
             </select>
           </div>
-          <Button type="submit" className="w-full h-11 justify-center rounded-xl font-bold gap-2">
+
+
+         <button type="submit" className="w-full flex justify-center items-center h-11 bg-cyan-700 hover:bg-cyan-800 rounded-md cursor-pointer text-white text-xs font-bold py-2 ">
             <Search className="h-4 w-4" /> Search Again
-          </Button>
+          </button>
         </form>
       </Card>
 
+
+
       <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Filters Sidebar */}
-        <Card className="w-full lg:w-1/4 p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-sm space-y-6">
+        {/* filters sidebar */}
+
+        <Card className="w-full lg:w-1/4 p-6 bg-cyan-200 dark:bg-slate-900 border-blue-500 dark:border-slate-800 shadow-sm space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-            <Sliders className="h-5 w-5 text-slate-400" />
+            <Sliders className="h-5 w-5 dark:text-slate-400 text-white" />
             <h3 className="font-bold text-slate-800 dark:text-slate-100">Filters & Sort</h3>
           </div>
 
           <form onSubmit={handleFilterSubmit} className="space-y-5">
-            {/* Sort options */}
+            {/* sort options */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Sort Flights By</label>
+              <label className="block text-xs font-bold dark:text-slate-400 text-primary-700 uppercase tracking-wider">Sort Flights By</label>
               <select
                 value={`${sortBy}:${sortOrder}`}
                 onChange={(e) => {
@@ -175,7 +194,7 @@ export const SearchFlightsPage = () => {
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="cursor-pointer w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="seats.economy.price:asc">Price: Low to High</option>
                 <option value="seats.economy.price:desc">Price: High to Low</option>
@@ -185,13 +204,13 @@ export const SearchFlightsPage = () => {
               </select>
             </div>
 
-            {/* Stops filter */}
+            {/* stops filter */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Stops</label>
+              <label className="block text-xs font-bold dark:text-slate-400 text-primary-700 uppercase tracking-wider">Stops</label>
               <select
                 value={stops}
                 onChange={(e) => setStops(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="cursor-pointer w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">Any stops</option>
                 <option value="0">Non-stop (Direct)</option>
@@ -200,9 +219,10 @@ export const SearchFlightsPage = () => {
               </select>
             </div>
 
-            {/* Price limits */}
+
+            {/* price limits */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Price Limits (INR)</label>
+              <label className="block text-xs font-bold dark:text-slate-400  text-primary-700 uppercase tracking-wider">Price Limits (INR)</label>
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="number"
@@ -221,18 +241,18 @@ export const SearchFlightsPage = () => {
               </div>
             </div>
 
-            <Button type="submit" variant="outline" className="w-full text-xs font-bold py-2 justify-center">
+            <button type="submit" className="w-full h-11 bg-cyan-700 hover:bg-cyan-800 rounded-md cursor-pointer text-white text-xs font-bold py-2 justify-center">
               Apply Filters
-            </Button>
+            </button>
           </form>
         </Card>
 
-        {/* Results List */}
-        <div className="w-full lg:w-3/4 space-y-6">
+        {/* results list */}
+        <div className="w-full  lg:w-3/4 space-y-6">
           {isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-44 bg-slate-100 dark:bg-slate-900 rounded-xl animate-pulse" />
+                <div key={i} className="h-44 bg-cyan-300 dark:bg-slate-900 rounded-xl animate-pulse" />
               ))}
             </div>
           ) : flights?.length > 0 ? (
@@ -242,10 +262,10 @@ export const SearchFlightsPage = () => {
                 return (
                   <Card
                     key={flight._id}
-                    className="p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow duration-300"
+                    className= "p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-cyan-300 dark:hover:border-primary-600 transition-all duration-300"
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                      {/* Flight Details Info */}
+                      {/* flight details info */}
                       <div className="flex-1 space-y-4">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-bold bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">
@@ -261,7 +281,7 @@ export const SearchFlightsPage = () => {
                           )}
                         </div>
 
-                        {/* Route Timeline */}
+                        {/* route timeline */}
                         <div className="flex items-center justify-between gap-2 sm:gap-4 max-w-md">
                           <div>
                             <p className="text-xl font-bold">{formatTime(flight.departureTime)}</p>
@@ -338,6 +358,7 @@ export const SearchFlightsPage = () => {
               description="Please check back later or try changing your origin/destination parameters."
               actionLabel="Return Home"
               onAction={() => navigate('/')}
+              
             />
           )}
         </div>
