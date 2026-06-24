@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFlightById } from '../../store/slices/flightSlice';
 import { createBooking } from '../../store/slices/bookingSlice';
 import { useAuth } from '../../hooks/useAuth';
-import { Plane, Calendar, User, Users, ShieldAlert, Wifi, Utensils, HelpCircle, Check, ArrowLeft, Plus, Trash2, CreditCard } from 'lucide-react';
+import { Plane,  Users, ShieldAlert, Wifi, Utensils, ArrowLeft, Plus, Trash2, CreditCard } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -12,9 +12,12 @@ import { Spinner } from '../../components/ui/Spinner';
 import { formatPrice, formatTime, formatDate } from '../../utils';
 import toast from 'react-hot-toast';
 
+
+// This page is displayed after we click the "Book Flight" button on seach flight page
+
 export const FlightDetailsPage = () => {
-  const { id } = useParams();
-  const [searchParams] = useSearchParams();
+  const { id } = useParams();   //for reading route parameters
+  const [searchParams] = useSearchParams(); //for reading query parameters
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,13 +25,13 @@ export const FlightDetailsPage = () => {
   const { selectedFlight, isLoading } = useSelector((state) => state.flights);
   const bookingState = useSelector((state) => state.bookings);
 
-  // Selected seat class and passengers list
+  // selected seat class and passengers list
   const [seatClass, setSeatClass] = useState(searchParams.get('class') || 'economy');
   const [passengers, setPassengers] = useState([
     { firstName: '', lastName: '', age: '', passportNumber: '', nationality: '', seatClass: seatClass },
-  ]);
+  ]);  //passengers list is an array of objects
 
-  // Payment mock details
+  // payment mock details
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -37,7 +40,7 @@ export const FlightDetailsPage = () => {
     dispatch(getFlightById(id));
   }, [dispatch, id]);
 
-  // Sync seat class from passenger select
+  // this function will sync the passengers info with their selected cabin class
   useEffect(() => {
     setPassengers((prev) => prev.map((p) => ({ ...p, seatClass })));
   }, [seatClass]);
@@ -62,7 +65,7 @@ export const FlightDetailsPage = () => {
 
   const handleRemovePassenger = (index) => {
     if (passengers.length > 1) {
-      setPassengers(passengers.filter((_, idx) => idx !== index));
+      setPassengers(passengers.filter(( _ , idx) => idx !== index));
     }
   };
 
@@ -77,11 +80,11 @@ export const FlightDetailsPage = () => {
 
     if (!isAuthenticated) {
       toast.error('Please sign in to complete your booking.');
-      navigate('/login', { state: { from: { pathname: window.location.pathname } } });
+      navigate('/login', { state: { from: { pathname: window.location.pathname } } });  //here we are navigating the user to the login page ,but also making sure to record the location where he desired to be so that we can redirect him to that page after he logs in
       return;
     }
 
-    // Validation
+    // validation
     const invalidPassenger = passengers.some(
       (p) => !p.firstName || !p.lastName || !p.age || !p.passportNumber || !p.nationality
     );
@@ -91,6 +94,7 @@ export const FlightDetailsPage = () => {
       return;
     }
 
+    //converting the form data into clean api data
     const bookingData = {
       flightId: selectedFlight._id,
       passengers: passengers.map((p) => ({
@@ -104,13 +108,14 @@ export const FlightDetailsPage = () => {
       seatClass,
       payment: {
         method: paymentMethod,
-        last4: '4242',
+        last4: '4242',  //dummy data
       },
       contactEmail,
       contactPhone,
     };
 
     const resultAction = await dispatch(createBooking(bookingData));
+
     if (createBooking.fulfilled.match(resultAction)) {
       toast.success('Flight booked successfully!');
       navigate('/dashboard/bookings');
@@ -121,15 +126,15 @@ export const FlightDetailsPage = () => {
 
   return (
     <div className="skyway-container space-y-8 pb-16 pt-8">
-      {/* Header Back Button */}
+      {/* header back button */}
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+        className=" cursor-pointer flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" /> Back to Search
       </button>
 
-      {/* Flight Information Panel */}
+      {/* flight information panel */}
       <Card className="p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
           <div className="space-y-1">
@@ -150,7 +155,7 @@ export const FlightDetailsPage = () => {
           </div>
         </div>
 
-        {/* Timeline details */}
+        {/* timeline details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
           <div>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Departure</p>
@@ -172,7 +177,7 @@ export const FlightDetailsPage = () => {
           </div>
         </div>
 
-        {/* Amenities & Aircraft */}
+        {/* amenities and aircraft */}
         <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
           <Badge variant="secondary">Aircraft: {selectedFlight.aircraft}</Badge>
           {selectedFlight.amenities?.wifi && (
@@ -188,13 +193,14 @@ export const FlightDetailsPage = () => {
         </div>
       </Card>
 
-      {/* Booking Form Layout */}
+      {/* booking form layout */}
       <div className="flex flex-col-reverse lg:flex-row gap-8 items-start">
-        {/* Left Column: Passenger Details */}
+
+        {/* left column: passenger details */}
         <div className="w-full lg:w-2/3 space-y-6">
           <form onSubmit={handleBookingSubmit} className="space-y-6">
             {/* Cabin Class Selection */}
-            <Card className="p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800">
+            <Card className="p-6 bg-slate-200 dark:bg-slate-900 border-slate-100 dark:border-slate-800">
               <h3 className="text-base font-bold mb-4">1. Select Cabin Class</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div
@@ -229,8 +235,8 @@ export const FlightDetailsPage = () => {
               </div>
             </Card>
 
-            {/* Passenger Forms */}
-            <Card className="p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 space-y-6">
+            {/* passenger forms */}
+            <Card className="p-6 bg-slate-200 dark:bg-slate-900 border-slate-100 dark:border-slate-800 space-y-6">
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
                 <h3 className="text-base font-bold flex items-center gap-2">
                   <Users className="h-5 w-5 text-slate-400" /> 2. Passenger Information
@@ -249,7 +255,7 @@ export const FlightDetailsPage = () => {
               {passengers.map((passenger, idx) => (
                 <div key={idx} className="p-4 bg-slate-50/50 dark:bg-slate-950/30 border border-slate-100 dark:border-slate-800 rounded-xl space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Passenger #{idx + 1}</span>
+                    <span className="text-xs font-bold dark:text-slate-500 text-blue-950 uppercase tracking-wider">Passenger #{idx + 1}</span>
                     {passengers.length > 1 && (
                       <button
                         type="button"
@@ -263,32 +269,32 @@ export const FlightDetailsPage = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">First Name</label>
+                      <label className="block text-xs font-semibold text-blue-950 dark:text-slate-400 mb-1">First Name</label>
                       <input
                         type="text"
                         required
                         value={passenger.firstName}
                         onChange={(e) => handlePassengerChange(idx, 'firstName', e.target.value)}
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        placeholder="John"
+                        className="w-full  dark:bg-slate-900 bg-white border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        placeholder="Your name"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Last Name</label>
+                      <label className="block text-xs font-semibold text-blue-950 dark:text-slate-400 mb-1">Last Name</label>
                       <input
                         type="text"
                         required
                         value={passenger.lastName}
                         onChange={(e) => handlePassengerChange(idx, 'lastName', e.target.value)}
                         className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        placeholder="Doe"
+                        placeholder="Your surname"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Age</label>
+                      <label className="block text-xs font-semibold text-blue-950 dark:text-slate-400 mb-1">Age</label>
                       <input
                         type="number"
                         required
@@ -299,7 +305,7 @@ export const FlightDetailsPage = () => {
                       />
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Passport Number</label>
+                      <label className="block text-xs font-semibold text-blue-950 dark:text-slate-400 mb-1">Passport Number</label>
                       <input
                         type="text"
                         required
@@ -312,7 +318,7 @@ export const FlightDetailsPage = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nationality</label>
+                    <label className="block text-xs font-semibold text-blue-950 dark:text-slate-400 mb-1">Nationality</label>
                     <input
                       type="text"
                       required
@@ -326,14 +332,14 @@ export const FlightDetailsPage = () => {
               ))}
             </Card>
 
-            {/* Contact Details & Mock Payment */}
-            <Card className="p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 space-y-4">
+            {/* contact details and mock payment */}
+            <Card className="p-6 bg-slate-200 dark:bg-slate-900 border-slate-100 dark:border-slate-800 space-y-4">
               <h3 className="text-base font-bold border-b border-slate-100 dark:border-slate-800 pb-3">
                 3. Contact & Payment Info
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Contact Email</label>
+                  <label className="block text-xs font-semibold text-blue-950 dark:text-slate-400 mb-1">Contact Email</label>
                   <input
                     type="email"
                     required
@@ -344,7 +350,7 @@ export const FlightDetailsPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Contact Phone</label>
+                  <label className="block text-xs font-semibold text-blue-950 dark:text-slate-400 mb-1">Contact Phone</label>
                   <input
                     type="tel"
                     required
@@ -371,8 +377,8 @@ export const FlightDetailsPage = () => {
                   <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
                     <input
                       type="radio"
-                      checked={paymentMethod === 'net_banking'}
-                      onChange={() => setPaymentMethod('net_banking')}
+                      checked={paymentMethod === 'netbanking'}
+                      onChange={() => setPaymentMethod('netbanking')}
                       className="text-primary-600 focus:ring-primary-500"
                     />
                     Net Banking
@@ -383,7 +389,7 @@ export const FlightDetailsPage = () => {
           </form>
         </div>
 
-        {/* Right Column: Pricing Summary Sidebar */}
+        {/* right column: pricing summary sidebar */}
         <div className="w-full lg:w-1/3 space-y-6">
           <Card className="p-6 bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-lg sticky top-24">
             <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">

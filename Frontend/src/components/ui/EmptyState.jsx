@@ -1,5 +1,4 @@
 
-import { Button } from './Button';
 
 export const EmptyState = ({
   title = 'No results found',
@@ -10,7 +9,7 @@ export const EmptyState = ({
   className = '',
 }) => {
   return (
-    <div className={`flex flex-col items-center justify-center text-center p-8 border border-dashed border-blue-400 dark:border-slate-800 rounded-xl bg-cyan-200 dark:bg-slate-900/30 ${className}`}>
+    <div className={`flex flex-col items-center justify-center text-center p-8 border border-dashed border-slate-500 dark:border-slate-800 rounded-xl bg-slate-300 dark:bg-slate-900/30 ${className}`}>
       {Icon && (
         <div className="p-4  dark:bg-slate-800 text-slate-400 dark:text-slate-500 rounded-full mb-4">
           <Icon className="h-8 w-8" />

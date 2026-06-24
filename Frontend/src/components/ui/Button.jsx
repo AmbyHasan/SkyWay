@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export const Button = ({
   children,
@@ -15,17 +15,17 @@ export const Button = ({
 
   const variants = {
     primary:
-      'bg-primary-600 text-white shadow-lg shadow-primary-600/20 hover:bg-primary-700 hover:shadow-primary-600/30 active:scale-[0.98] focus:ring-primary-500/20',
+      'bg-primary-600 cursor-pointer text-white shadow-lg shadow-primary-600/20 hover:bg-primary-700 hover:shadow-primary-600/30 active:scale-[0.98] focus:ring-primary-500/20',
     secondary:
-      'bg-slate-100 text-slate-800 hover:bg-slate-200 active:scale-[0.98] focus:ring-slate-300/40 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
+      'bg-slate-100 cursor-pointer text-slate-800 hover:bg-slate-200 active:scale-[0.98] focus:ring-slate-300/40 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
     outline:
-      'border border-slate-300 bg-transparent text-slate-700 hover:border-primary-500 hover:bg-primary-50 hover:text-primary-700 active:scale-[0.98] focus:ring-primary-500/15 dark:border-slate-700 dark:text-slate-200 dark:hover:border-primary-500 dark:hover:bg-primary-950/30 dark:hover:text-primary-300',
+      'border cursor-pointer border-slate-300 bg-transparent text-slate-700 hover:border-primary-500 hover:bg-primary-50 hover:text-primary-700 active:scale-[0.98] focus:ring-primary-500/15 dark:border-slate-700 dark:text-slate-200 dark:hover:border-primary-500 dark:hover:bg-primary-950/30 dark:hover:text-primary-300',
     ghost:
-      'bg-transparent text-slate-700 hover:bg-slate-100 hover:text-primary-700 active:scale-[0.98] focus:ring-primary-500/15 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-primary-300',
+      'bg-transparent cursor-pointer text-slate-700 hover:bg-slate-100 hover:text-primary-700 active:scale-[0.98] focus:ring-primary-500/15 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-primary-300',
     danger:
-      'bg-red-600 text-white shadow-lg shadow-red-600/20 hover:bg-red-700 active:scale-[0.98] focus:ring-red-500/20',
+      'bg-red-600 cursor-pointer text-white shadow-lg shadow-red-600/20 hover:bg-red-700 active:scale-[0.98] focus:ring-red-500/20',
     glass:
-      'border border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 active:scale-[0.98] focus:ring-white/20',
+      'border cursor-pointer border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 active:scale-[0.98] focus:ring-white/20',
   };
 
   const sizes = {

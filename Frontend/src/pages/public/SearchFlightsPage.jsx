@@ -10,6 +10,8 @@ import { Badge } from '../../components/ui/Badge';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { formatPrice, formatTime } from '../../utils';
 
+// This page will be displayed when we click the search flight button on landing page
+
 export const SearchFlightsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
@@ -110,7 +112,7 @@ export const SearchFlightsPage = () => {
     <div className="skyway-container space-y-8 pb-16 pt-8">
       {/* search header */}
 
-      <Card className="p-6 bg-cyan-200 dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-md">
+      <Card className="p-6 bg-slate-300 dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-md">
         <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
 
           {/* from */}
@@ -177,7 +179,7 @@ export const SearchFlightsPage = () => {
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         {/* filters sidebar */}
 
-        <Card className="w-full lg:w-1/4 p-6 bg-cyan-200 dark:bg-slate-900 border-blue-500 dark:border-slate-800 shadow-sm space-y-6">
+        <Card className="w-full lg:w-1/4 p-6 bg-slate-300 dark:bg-slate-900 border-blue-500 dark:border-slate-800 shadow-sm space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
             <Sliders className="h-5 w-5 dark:text-slate-400 text-white" />
             <h3 className="font-bold text-slate-800 dark:text-slate-100">Filters & Sort</h3>
@@ -252,7 +254,7 @@ export const SearchFlightsPage = () => {
           {isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-44 bg-cyan-300 dark:bg-slate-900 rounded-xl animate-pulse" />
+                <div key={i} className="h-44 bg-slate-300 dark:bg-slate-900 rounded-xl animate-pulse" />
               ))}
             </div>
           ) : flights?.length > 0 ? (
@@ -306,26 +308,26 @@ export const SearchFlightsPage = () => {
                         </div>
                       </div>
 
-                      {/* Pricing & Call to Action */}
+                      {/* pricing and call to action */}
                       <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 md:border-l md:border-slate-100 md:dark:border-slate-800 md:pl-6 min-w-[150px]">
                         <div className="text-left md:text-right">
                           <p className="text-xs text-slate-400 capitalize">{seatClass} Class</p>
                           <p className="text-2xl font-extrabold text-slate-900 dark:text-white">{formatPrice(seatInfo.price)}</p>
                           <p className="text-[10px] text-slate-500">{seatInfo.available} seats left</p>
                         </div>
-                        <Button
+                        <button
                           onClick={() => navigate(`/flights/${flight._id}?class=${seatClass}`)}
-                          className="font-bold rounded-xl gap-1 text-xs"
+                          className=" gap-1 flex justify-center items-center  w-full h-11 bg-cyan-700 hover:bg-cyan-800 rounded-md cursor-pointer text-white text-xs font-bold py-2 "
                         >
                           Book Flight <ChevronRight className="h-4 w-4" />
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </Card>
                 );
               })}
 
-              {/* Pagination controls */}
+              {/* pagination controls */}
               {pagination?.pages > 1 && (
                 <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
                   <p className="text-xs text-slate-500">
