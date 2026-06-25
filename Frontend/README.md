@@ -1,332 +1,117 @@
-# ✈️ SkyWay Airline Reservation System — Frontend
+# SkyWay Frontend
 
-A modern, responsive, and user-friendly frontend for the **SkyWay Airline Reservation System**. It allows users to search flights, book tickets, manage bookings, update profiles, and provides a dedicated dashboard for administrators to manage flights, users, bookings, and analytics.
+The SkyWay frontend is a responsive React application built with Vite and Tailwind CSS. It provides the user interface for flight search, booking, authentication, profile management, and admin operations.
 
-Built as part of a full-stack MERN project.
+## Responsibilities
 
----
+The frontend is responsible for:
 
-## 🌐 Live Demo
+- Rendering the flight booking interface
+- Managing authentication state
+- Sending API requests to the backend
+- Protecting authenticated routes
+- Protecting admin-only routes
+- Managing flights, bookings, and profile state
+- Displaying loading, error, and success states
+- Supporting dark and light themes
 
-* **Frontend:** Add your Vercel deployment URL here
-* **Backend API:** Add your Render deployment URL here
+## Frontend Tech Stack
 
----
+| Technology | Purpose |
+|---|---|
+| React | UI library |
+| Vite | Development server and build tool |
+| Tailwind CSS | Styling |
+| Redux Toolkit | Global state management |
+| React Router | Client-side routing |
+| Axios | HTTP requests |
+| Framer Motion | UI animations |
+| React Query | Server-state support |
 
-## ✨ Features
+## Folder Structure
 
-### 👤 User Features
-
-* User registration and login
-* JWT-based authentication
-* Protected routes for authenticated users
-* Flight search and filtering
-* Flight details page
-* Passenger details form
-* Flight booking flow
-* Booking confirmation page
-* View all personal bookings
-* View individual booking details
-* Cancel bookings
-* Profile management
-* Logout functionality
-* Responsive design for desktop, tablet, and mobile devices
-* Toast notifications for success and error messages
-
-### 🛠️ Admin Features
-
-* Admin-only protected dashboard
-* Dashboard statistics and analytics
-* Manage flights
-* Add new flights
-* Edit existing flights
-* Delete flights
-* Manage users
-* Activate or deactivate users
-* Manage bookings
-* Update booking status
-* Revenue and booking analytics
-* Charts for dashboard insights
-
----
-
-## 🧰 Tech Stack
-
-| Technology       | Purpose                                |
-| ---------------- | -------------------------------------- |
-| React 19         | Frontend library                       |
-| Vite             | Fast development server and build tool |
-| React Router DOM | Client-side routing                    |
-| Redux Toolkit    | Global state management                |
-| React Redux      | Connects Redux with React              |
-| Axios            | API requests                           |
-| Tailwind CSS     | Styling and responsive UI              |
-| Framer Motion    | Smooth animations                      |
-| React Hook Form  | Form handling and validation           |
-| React Hot Toast  | Notifications                          |
-| Lucide React     | Modern icons                           |
-| React Icons      | Additional icon library                |
-| Recharts         | Admin dashboard charts                 |
-| ESLint           | Code quality and linting               |
-
----
-
-## 📁 Project Structure
-
-```bash
+```text
 Frontend/
 │
-├── public/
-│
 ├── src/
-│   │
-│   ├── api/
-│   │   └── axios.js
-│   │
-│   ├── app/
-│   │   └── store.js
-│   │
-│   ├── assets/
-│   │
-│   ├── components/
-│   │   ├── common/
-│   │   ├── flight/
-│   │   ├── booking/
-│   │   ├── layout/
-│   │   └── ui/
-│   │
-│   ├── contexts/
-│   │   └── ThemeContext.jsx
-│   │
-│   ├── features/
-│   │   ├── auth/
-│   │   ├── flights/
-│   │   ├── bookings/
-│   │   └── admin/
-│   │
-│   ├── hooks/
-│   │
-│   ├── pages/
-│   │   ├── public/
-│   │   ├── user/
-│   │   └── admin/
-│   │
-│   ├── routes/
-│   │   ├── AppRouter.jsx
-│   │   ├── ProtectedRoute.jsx
-│   │   └── AdminRoute.jsx
-│   │
-│   ├── store/
-│   │   └── slices/
-│   │
-│   ├── utils/
-│   │
+│   ├── components/       # Reusable UI components
+│   ├── pages/            # Page-level components
+│   ├── layouts/          # Public and dashboard layouts
+│   ├── routes/           # Route configuration
+│   ├── services/         # API service functions
+│   ├── store/            # Redux store and slices
+│   ├── hooks/            # Custom React hooks
+│   ├── context/          # Theme context
+│   ├── utils/            # Utility functions
 │   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
+│   └── main.jsx
 │
-├── .env.example
+├── public/
 ├── package.json
-├── vite.config.js
 └── README.md
 ```
 
----
+## Frontend Architecture
 
-## 📄 Main Pages
+```mermaid
+flowchart TD
+    Pages[Pages] --> Components[Reusable Components]
+    Pages --> Hooks[Custom Hooks]
+    Hooks --> Redux[Redux Store]
+    Hooks --> Services[API Services]
+    Services --> Axios[Axios Client]
+    Axios --> Backend[Express API]
+```
+
+## Redux and API Request Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant P as React Page
+    participant R as Redux Slice
+    participant S as API Service
+    participant A as Axios Client
+    participant B as Backend API
+
+    U->>P: Performs an action
+    P->>R: Dispatch async thunk
+    R->>S: Call service function
+    S->>A: Send HTTP request
+    A->>B: Call API endpoint
+    B-->>A: JSON response
+    A-->>S: Response data
+    S-->>R: Return result
+    R-->>P: Update state
+    P-->>U: Render updated UI
+```
+
+## Protected Route Flow
+
+```mermaid
+flowchart TD
+    User[User visits protected page] --> CheckAuth{Authenticated?}
+    CheckAuth -- No --> Login[Redirect to Login]
+    CheckAuth -- Yes --> CheckRole{Admin route?}
+    CheckRole -- No --> Page[Render Page]
+    CheckRole -- Yes --> AdminCheck{User is Admin?}
+    AdminCheck -- Yes --> AdminPage[Render Admin Page]
+    AdminCheck -- No --> Unauthorized[Redirect / Show Unauthorized]
+```
+
+## Main Pages
 
 ### Public Pages
-
-* Home / Landing Page
-* Login Page
-* Register Page
-* Flight Search Results Page
-* Flight Details Page
+- Landing page
+- Login page
+- Register page
+- Flight search page
+- Flight results page
+- Flight details page
 
 ### User Pages
-
-* Booking Page
-* Booking Success Page
-* My Bookings Page
-* Booking Details Page
-* Profile Page
-
-### Admin Pages
-
-* Admin Dashboard
-* Manage Flights Page
-* Add Flight Page
-* Edit Flight Page
-* Manage Users Page
-* Manage Bookings Page
-* Revenue Analytics Page
-
----
-
-## ⚙️ Environment Variables
-
-Create a `.env` file inside the `Frontend` folder.
-
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-```
-
-For production, replace the local URL with your deployed backend URL:
-
-```env
-VITE_API_BASE_URL=https://your-backend-url.onrender.com/api
-```
-
-> Never commit your `.env` file to GitHub.
-
----
-
-## 🚀 Installation and Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/skyway.git
-```
-
-### 2. Navigate to the Frontend Folder
-
-```bash
-cd SkyWay/Frontend
-```
-
-### 3. Install Dependencies
-
-```bash
-npm install
-```
-
-### 4. Add Environment Variables
-
-Create a `.env` file:
-
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-```
-
-### 5. Start the Development Server
-
-```bash
-npm run dev
-```
-
-The application will run on:
-
-```bash
-http://localhost:5173
-```
-
----
-
-## 📦 Available Scripts
-
-| Command           | Description                           |
-| ----------------- | ------------------------------------- |
-| `npm run dev`     | Starts the development server         |
-| `npm run build`   | Creates an optimized production build |
-| `npm run preview` | Runs the production build locally     |
-| `npm run lint`    | Checks code quality using ESLint      |
-
----
-
-## 🔐 Authentication Flow
-
-```text
-User Registers / Logs In
-        ↓
-Backend Returns Access Token
-        ↓
-Frontend Stores Authentication State
-        ↓
-Protected Routes Become Accessible
-        ↓
-User Can Book Flights and Manage Bookings
-```
-
-For admin users:
-
-```text
-Admin Logs In
-        ↓
-Role is Verified
-        ↓
-Admin Routes Become Accessible
-        ↓
-Admin Can Manage Flights, Users, and Bookings
-```
-
----
-
-## ✈️ Flight Booking Flow
-
-```text
-Search Flights
-      ↓
-View Available Flights
-      ↓
-Select a Flight
-      ↓
-Enter Passenger Details
-      ↓
-Confirm Booking
-      ↓
-Booking Created Successfully
-      ↓
-View Booking in My Bookings
-```
-
----
-
-## 🔗 Backend Repository
-
-This frontend connects with the SkyWay backend API.
-
-The backend provides:
-
-* Authentication APIs
-* Flight management APIs
-* Booking management APIs
-* User profile APIs
-* Admin analytics APIs
-* Role-based authorization
-* Secure JWT authentication
-
-Backend README: Add your backend repository link here.
-
----
-
-## 📱 Responsive Design
-
-The frontend is designed to work smoothly across:
-
-* Desktop screens
-* Laptops
-* Tablets
-* Mobile devices
-
-Tailwind CSS is used to create a responsive and consistent design system.
-
----
-
-## 🔒 Security Considerations
-
-* Protected routes for authenticated users
-* Admin-only routes for authorized administrators
-* JWT authentication
-* API base URL stored in environment variables
-* Form validation before API requests
-* Secure error handling and toast feedback
-
----
-
-## 👨‍💻 Author
-
-**Amber Hasan**
-
----
+- Booking flow
+- Booking success page
+- My bookings
+- Profile page
 
