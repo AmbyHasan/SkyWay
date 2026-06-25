@@ -1,467 +1,143 @@
-# ✈️ SkyWay — Full Stack Airline Reservation System
+# SkyWay — Flight Booking Platform
 
-SkyWay is a full-stack airline reservation platform built using the MERN stack. It enables users to search flights, make bookings, manage their reservations, and update their profiles. It also includes a powerful admin dashboard for managing flights, users, bookings, and revenue analytics.
+SkyWay is a full-stack flight booking platform built with the MERN stack. It allows users to search flights, create bookings, manage their profile and bookings, while administrators can manage flights, bookings, and dashboard insights.
 
----
+## Live Demo
 
-## 🌐 Live Demo
+- **Frontend:** [https://sky-way-swart.vercel.app](https://sky-way-swart.vercel.app)
+- **Backend API:** [https://skyway-api-nl2z.onrender.com](https://skyway-api-nl2z.onrender.com)
 
-| Service           | Link                                                |
-| ----------------- | --------------------------------------------------- |
-| Frontend          | https://sky-way-swart.vercel.app                    |
-| Backend API       | https://skyway-api-nl2z.onrender.com                     |
+## Project Overview
 
+SkyWay is split into two independent applications:
 
----
-## 🏗️ System Architecture
+- **Frontend** — React client for users and administrators
+- **Backend** — Node.js REST API responsible for authentication, flights, bookings, validation, and database operations
+
+For detailed setup and architecture of each application:
+
+- [Backend Documentation](./Backend/README.md)
+- [Frontend Documentation](./Frontend/README.md)
+
+## Key Features
+
+### User Features
+
+- Register and log in securely
+- Search flights by origin, destination, date, passengers, and cabin class
+- View flight details and availability
+- Create bookings
+- View booking history
+- Cancel eligible bookings
+- Update profile details
+- Dark/light theme support
+
+### Admin Features
+
+- Dashboard analytics
+- Add, edit, and manage flights
+- Manage user bookings
+- View booking and revenue statistics
+- Role-based protected routes
+
+## Tech Stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend | React, Vite, Tailwind CSS, Redux Toolkit, React Router, Axios |
+| Backend | Node.js, Express.js, MongoDB, Mongoose |
+| Authentication | JWT access tokens, refresh tokens, bcrypt |
+| Deployment | Vercel, Render, MongoDB Atlas |
+
+## System Architecture
 
 ```mermaid
 flowchart LR
-    User["User / Browser"]
+    User[User / Admin] --> Frontend[React Frontend]
+    Frontend --> API[Express REST API]
+    API --> DB[(MongoDB Atlas)]
 
-    subgraph FE["Frontend — React + Vite"]
-        Pages["Pages & Components"]
-        Redux["Redux Store"]
-        Services["API Service Layer"]
-    end
-
-    subgraph BE["Backend — Node.js + Express"]
-        App["app.js"]
-        Middleware["Middleware Layer<br/>CORS · Helmet · Rate Limiting · Validation"]
-        Routes["Routes"]
-        Controllers["Controllers"]
-        Models["Mongoose Models"]
-        JWT["JWT Authentication"]
-    end
-
-    subgraph DB["MongoDB Atlas"]
-        Users[("Users")]
-        Flights[("Flights")]
-        Bookings[("Bookings")]
-        RefreshTokens[("Refresh Tokens")]
-    end
-
-    User --> Pages
-    Pages --> Redux
-    Redux --> Services
-    Services -->|"HTTPS REST API"| App
-
-    App --> Middleware
-    Middleware --> Routes
-    Routes --> Controllers
-    Controllers --> JWT
-    Controllers --> Models
-
-    Models --> Users
-    Models --> Flights
-    Models --> Bookings
-    JWT --> RefreshTokens
+    API --> Auth[JWT Authentication]
+    API --> Flights[Flight Module]
+    API --> Booking[Booking Module]
+    API --> Admin[Admin Module]
 ```
 
----  
+## End-to-End Request Flow
 
-## ✨ Key Features
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as React Frontend
+    participant A as Express API
+    participant D as MongoDB
 
-### 👤 User Features
+    U->>F: Search or booking action
+    F->>A: API request using Axios
+    A->>A: Validate request and authenticate user
+    A->>D: Read or update data
+    D-->>A: Database response
+    A-->>F: JSON response
+    F-->>U: Updated UI
+```
 
-* Register and login securely
-* JWT-based authentication
-* Search available flights
-* Filter flights by route, date, price, airline, and cabin class
-* View flight details
-* Book flights for multiple passengers
-* Automatic seat availability updates
-* View booking history
-* View booking details
-* Cancel bookings
-* Automatic seat restoration after cancellation
-* Update personal profile
-* Responsive user interface
+## Deployment Architecture
 
-### 🛠️ Admin Features
+```mermaid
+flowchart TB
+    User --> Vercel[Vercel - React Frontend]
+    Vercel --> Render[Render - Node.js API]
+    Render --> Atlas[(MongoDB Atlas)]
+```
 
-* Secure admin-only routes
-* Dashboard with booking and revenue analytics
-* Create, update, and delete flights
-* Manage flight status
-* Manage users
-* Activate or deactivate users
-* View and manage all bookings
-* Update booking status
-* View total users, flights, bookings, and revenue
-* Revenue trends and route analytics
+## Local Setup
 
----
-
-## 🧰 Tech Stack
-
-### Frontend
-
-| Technology       | Usage                      |
-| ---------------- | -------------------------- |
-| React 19         | User interface             |
-| Vite             | Development and build tool |
-| Redux Toolkit    | State management           |
-| React Router DOM | Routing                    |
-| Axios            | API communication          |
-| Tailwind CSS     | Styling                    |
-| Framer Motion    | Animations                 |
-| React Hook Form  | Form handling              |
-| React Hot Toast  | Notifications              |
-| Recharts         | Dashboard charts           |
-
-### Backend
-
-| Technology        | Usage                      |
-| ----------------- | -------------------------- |
-| Node.js           | JavaScript runtime         |
-| Express.js        | Backend framework          |
-| MongoDB Atlas     | Cloud database             |
-| Mongoose          | MongoDB ODM                |
-| JWT               | Authentication             |
-| bcryptjs          | Password hashing           |
-| Express Validator | Request validation         |
-| Helmet            | Security headers           |
-| CORS              | Cross-origin communication |
-| Morgan            | HTTP request logging       |
-
-### Deployment
-
-| Platform      | Usage                  |
-| ------------- | ---------------------- |
-| Vercel        | Frontend deployment    |
-| Render        | Backend deployment     |
-| MongoDB Atlas | Cloud database hosting |
-
----
-
-## 📁 Project Structure
+### 1. Clone the repository
 
 ```bash
-SkyWay/
-│
-├── Backend/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middlewares/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── utils/
-│   │   ├── validators/
-│   │   ├── app.js
-│   │   └── server.js
-│   │
-│   ├── seed/
-│   ├── package.json
-│   └── README.md
-│
-├── Frontend/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── app/
-│   │   ├── components/
-│   │   ├── contexts/
-│   │   ├── pages/
-│   │   ├── routes/
-│   │   ├── store/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   │
-│   ├── package.json
-│   └── README.md
-│
-├── README.md
-└── .gitignore
-```
-
----
-
-## 🏗️ System Architecture
-
-```text
-React Frontend
-      │
-      │ Axios API Requests
-      ▼
-Node.js + Express.js Backend
-      │
-      │ Mongoose ODM
-      ▼
-MongoDB Atlas Database
-```
-
----
-
-## 🔄 Application Flow
-
-### Authentication Flow
-
-```text
-User Registers / Logs In
-        ↓
-Backend Validates Credentials
-        ↓
-JWT Access and Refresh Tokens Are Generated
-        ↓
-Frontend Stores Authentication State
-        ↓
-Protected Routes Become Accessible
-```
-
-### Flight Booking Flow
-
-```text
-Search Flights
-      ↓
-Select Flight
-      ↓
-Add Passenger Details
-      ↓
-Create Booking
-      ↓
-Seats Are Reduced
-      ↓
-Booking Confirmation Generated
-```
-
-### Booking Cancellation Flow
-
-```text
-User Cancels Booking
-      ↓
-Booking Status Changes to Cancelled
-      ↓
-Seats Are Restored Automatically
-      ↓
-Updated Booking Appears in User Dashboard
-```
-
----
-
-## ⚙️ Local Setup
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-* Node.js version 18 or higher
-* npm
-* MongoDB Atlas account or local MongoDB instance
-* Git
-
----
-
-## 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/skyway.git
+git clone <your-repository-url>
 cd SkyWay
 ```
 
----
-
-## 2. Backend Setup
+### 2. Start the backend
 
 ```bash
 cd Backend
 npm install
-```
-
-Create a `.env` file inside the `Backend` folder:
-
-```env
-PORT=5000
-
-MONGO_URI=your_mongodb_connection_string
-
-JWT_SECRET=your_access_token_secret
-JWT_EXPIRES_IN=15m
-
-JWT_REFRESH_SECRET=your_refresh_token_secret
-JWT_REFRESH_EXPIRES_IN=7d
-
-NODE_ENV=development
-
-CLIENT_URL=http://localhost:5173
-```
-
-Start the backend server:
-
-```bash
 npm run dev
 ```
 
-The backend should run on:
+### 3. Start the frontend
 
-```bash
-http://localhost:5000
-```
-
----
-
-## 3. Frontend Setup
-
-Open a new terminal:
+Open another terminal:
 
 ```bash
 cd Frontend
 npm install
-```
-
-Create a `.env` file inside the `Frontend` folder:
-
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-```
-
-Start the frontend server:
-
-```bash
 npm run dev
 ```
 
-The frontend should run on:
+The frontend will run locally and communicate with the backend API using the configured environment variable.
+
+## Repository Structure
 
 ```bash
-http://localhost:5173
+SkyWay/
+│
+├── Backend/          # Node.js + Express REST API
+├── Frontend/         # React + Vite client application
+├── README.md         # Project-level documentation
+└── .gitignore
 ```
 
----
+## Documentation Map
 
-## 📡 API Modules
+| Documentation | Contains |
+|---|---|
+| Root README | Overall project architecture, setup order, deployment overview |
+| Backend README | API, database models, authentication, booking transaction flow |
+| Frontend README | React architecture, Redux state management, route protection, UI setup |
 
-### Authentication
-
-```http
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/refresh-token
-POST /api/auth/logout
-```
-
-### Users
-
-```http
-GET    /api/users/me
-PATCH  /api/users/me
-```
-
-### Flights
-
-```http
-GET    /api/flights
-GET    /api/flights/:id
-POST   /api/flights
-PATCH  /api/flights/:id
-DELETE /api/flights/:id
-```
-
-### Bookings
-
-```http
-POST   /api/bookings
-GET    /api/bookings/my-bookings
-GET    /api/bookings/:id
-PATCH  /api/bookings/:id/cancel
-```
-
-### Admin
-
-```http
-GET    /api/admin/stats
-GET    /api/admin/revenue
-GET    /api/admin/users
-GET    /api/admin/users/:id
-PATCH  /api/admin/users/:id/status
-GET    /api/admin/bookings
-PATCH  /api/admin/bookings/:id/status
-```
-
----
-
-## 🔐 Security Features
-
-* Password hashing using bcryptjs
-* JWT access token authentication
-* Refresh token support
-* Protected user routes
-* Role-based authorization
-* Admin-only access control
-* Request validation using express-validator
-* Security headers using Helmet
-* CORS configuration
-* Secure error handling
-* Seat inventory updates using database transactions
-
----
-
-## 📊 Admin Dashboard Analytics
-
-The admin dashboard includes:
-
-* Total users
-* Total flights
-* Total bookings
-* Confirmed bookings
-* Cancelled bookings
-* Revenue analytics
-* Monthly revenue trends
-* Popular routes
-* Recent bookings
-* User management controls
-
----
-
-## 🧪 Modules Implemented
-
-| Module                    | Status      |
-| ------------------------- | ----------- |
-| Authentication            | ✅ Completed |
-| User Management           | ✅ Completed |
-| Flight Management         | ✅ Completed |
-| Flight Search             | ✅ Completed |
-| Booking Management        | ✅ Completed |
-| Booking Cancellation      | ✅ Completed |
-| Seat Inventory Management | ✅ Completed |
-| Admin Dashboard           | ✅ Completed |
-| Revenue Analytics         | ✅ Completed |
-| Role-Based Access Control | ✅ Completed |
-| Responsive Frontend       | ✅ Completed |
-
----
-
-## 🚀 Deployment
-
-### Frontend Deployment
-
-The frontend can be deployed on Vercel.
-
-```bash
-npm run build
-```
-
-Set the following environment variable in Vercel:
-
-```env
-VITE_API_BASE_URL=https://your-backend-url.onrender.com/api
-```
-
-### Backend Deployment
-
-The backend can be deployed on Render.
-
-Set the following environment variables in Render:
-
-```env
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_access_token_secret
-JWT_REFRESH_SECRET=your_refresh_token_secret
-CLIENT_URL=https://your-frontend-url.vercel.app
-NODE_ENV=production
-```
----
-
-## 👨‍💻 Author
+## Author
 
 **Amber Hasan**
